@@ -1,0 +1,30 @@
+{
+    "name": "trujs-build"
+    , "description": [
+        ""
+    ]
+    , "strict": true
+    , "repos": [
+        {
+            "type": "git"
+            , "url": "https://github.com/trujs/TruJS.core.git"
+            , "branch": "master"
+            , "local": "TruJS/core"
+        }
+    ]
+    , "entries": [
+        {
+            "type": "trujs.ioc.monolith"
+            , "base": [
+                "{TruJS.build.handlers}/builtin-handlers.dtree.json"
+                , "{TruJS.ioc}/build-handlers.dtree.json"
+            ]
+            , "engine": "node"
+            , "config": {
+                "dtreeFileName": "builder-dtree.js"
+                , "appFileName": "builder-node.js"
+                , "output": "TruJS/builder/"
+            }
+        }
+    ]
+}

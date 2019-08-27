@@ -1,0 +1,26 @@
+{
+    "buildSteps": [
+        "collect"
+        , "preprocess"
+        , "assemble"
+        , "format"
+        , "save"
+    ]
+    , "includeProperties": {
+        "collectProperty": "post-collect"
+        , "preprocessProperty": "post-preprocess"
+        , "assembleProperty": "post-assemble"
+        , "formatProperty": "post-format"
+    }
+    , "configFileName": "config.json"
+    , "manifestFileName": "manifest.json"
+    , "manifestEntriesPropertyName": "entries"
+    , "manifestEntryBuildTypePropertyName": "type"
+    , "buildStepLoopTypePropertyName": "loopType"
+    , "buildStepLoopType": "concurrent"
+    , "config": {
+        "collect": {
+            "loopType": "linear"
+        }
+    }
+}
