@@ -17,7 +17,8 @@
             "type": "ioc.monolith"
             , "base": [
                 "{TruJS.build.handlers}/builtin-handlers.dtree.json"
-                , "{TruJS.ioc}/build-handlers.dtree.json"
+                , "{TruJS.build.handlers.ioc}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.express}/build-handler.dtree.json"
             ]
             , "engine": "node"
             , "config": {
