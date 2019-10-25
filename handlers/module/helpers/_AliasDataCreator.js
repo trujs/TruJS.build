@@ -101,13 +101,13 @@ function _AliasDataCreator(
         asset[defaults.docEntryPropertyName]
         .every(function everyDoc(doc) {
             //find the naming alias
-            if (doc.attributes.hasOwnProperty("naming")) {
-                naming = doc.attributes.naming;
+            if (doc.hasOwnProperty("naming")) {
+                naming = doc.naming;
                 if (
-                    !!naming.attributes
-                    &&  naming.attributes.hasOwnProperty("alias")
+                    !!naming
+                    &&  naming.hasOwnProperty("alias")
                 ) {
-                    alias = naming.attributes.alias.name;
+                    alias = naming.alias.name;
                     return false;
                 }
             }
