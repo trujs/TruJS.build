@@ -14,7 +14,7 @@
     ]
     , "entries": [
         {
-            "type": "trujs.ioc.monolith"
+            "type": "ioc.monolith"
             , "base": [
                 "{TruJS.build.handlers}/builtin-handlers.dtree.json"
                 , "{TruJS.ioc}/build-handlers.dtree.json"
