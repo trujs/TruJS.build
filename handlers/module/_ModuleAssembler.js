@@ -4,7 +4,7 @@
 */
 function _ModuleAssembler(
     promise
-    , buildHelpers_trujs_module_moduleDataCreator
+    , buildHelpers_module_moduleDataCreator
     , fs_fileInfo
     , reporter
     , defaults
@@ -13,7 +13,7 @@ function _ModuleAssembler(
     /**
     * @alias
     */
-    var moduleDataCreator = buildHelpers_trujs_module_moduleDataCreator;
+    var moduleDataCreator = buildHelpers_module_moduleDataCreator;
 
     /**
     *  @worker
