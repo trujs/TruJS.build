@@ -24,6 +24,11 @@ function _PathParser(
     */
     var SEP_PATT = /[\/\\]/g
     /**
+    * A regexp pattern for finding characters that need escaping
+    * @property
+    */
+    , ESCP_PATT = /[\/\\\.]/g
+    /**
     * A regexp pattern for stripping the modifiers from the begining
     * @property
     */
@@ -34,20 +39,15 @@ function _PathParser(
     */
     , DRV_PATT = /^[A-z]/
     /**
-    * A regexp pattern to test for a regular expression
+    * A regexp pattern to test for a regular expression in a path
     * @property
     */
-    , REGEX_PATT = /\[([^\]]+)\]/
-    /**
-    * A regexp pattern to test for a regular expression placeholder
-    * @property
-    */
-    , PLCHLDR_PATT = /[\{]{2}([^\{]+)[\}]{2}/g
+    , REGEX_PATT = /<((?:[^>]|(?:(?<=[\\])[>]))+)>/g
     /**
     * A regexp pattern to test for a regular expression
     * @property
     */
-    , ASTR_PATT = /[*]/;
+    , ASTR_PATT = /[*]/g;
 
     /**
     *
@@ -79,14 +79,27 @@ function _PathParser(
         );
 
         //parse the base
-        paresBase(pathFrag);
+        parseBase(pathFrag);
 
         //create the fully qualified path
-        pathFrag.fqpath = pathFrag.dir + pathFrag.sep + pathFrag.base;
+        pathFrag.fqpath = pathFrag.segments.join(pathFrag.sep);
+
+        //create the path that the files can be found in, starting with the dir
+        pathFrag.startInPath = pathFrag.dir;
+        if (
+            !pathFrag.filter
+            && !pathFrag.fragment
+            && pathFrag.base.indexOf("*") === -1
+        ) {
+            pathFrag.startInPath+= pathFrag.sep + pathFrag.base;
+        }
+
+        pathFrag.matchPath = createRegExpPatt(
+            pathFrag.segments.join(pathFrag.sep)
+        );
 
         return pathFrag;
     }
-
     /**
     * Seperates any modifiers from the path, creates a clean path (without reg exp patterns), and returns a new object with the resulting values
     * @function
@@ -94,7 +107,7 @@ function _PathParser(
     function startPathFrag(path) {
         //seperate the modifier
         var match = path.match(MOD_PATT)
-        , mod = match[1] || match[2]
+        , mod = (match[1] || match[2])
         //get a path with the regexp removed so we don't split on something inside a regex statment
         , fullPath = match[3]
         , placeholderMap = []
@@ -102,7 +115,7 @@ function _PathParser(
             fullPath
             , placeholderMap
         )
-        , sep = SEP_PATT.test(cleanPath)
+        , sep = cleanPath.match(SEP_PATT)
             && cleanPath.match(SEP_PATT)[1]
         , segments;
 
@@ -111,23 +124,31 @@ function _PathParser(
             cleanPath.split(SEP_PATT)
             .map(function forEachSeg(seg) {
                 return seg.replace(
-                    PLCHLDR_PATT
+                    REGEX_PATT
                     , function replacePlaceholder(str, plchlder) {
                         var val = placeholderMap[
                             parseInt(plchlder) - 1
                         ];
-                        return `[${val}]`;
+                        return `<${val}>`;
                     }
                 );
             });
 
+        //turn the modifier into an array
+        if (!!mod) {
+            mod = mod.split("");
+        }
+        else {
+            mod = [];
+        }
+
         return {
             "orig": path
-            , "modifier": !!mod
-                && mod.split(",")
-                || []
+            , "modifier": mod
             , "segments": segments
             , "sep": sep
+            , "recursive": mod.indexOf("r") !== -1
+            , "minus": mod.indexOf("-") !== -1
         };
     }
     /**
@@ -139,7 +160,7 @@ function _PathParser(
             REGEX_PATT
             , function remRegEx(matched, regex) {
                 placeholderMap.push(regex);
-                return `{{${placeholderMap.length}}}`;
+                return `<${placeholderMap.length}>`;
             }
         );
     }
@@ -188,7 +209,7 @@ function _PathParser(
     * Parses the base (file name) into a name and extension
     * @function
     */
-    function paresBase(pathFrag) {
+    function parseBase(pathFrag) {
         var match;
 
         if (!!pathFrag.base) {
@@ -207,32 +228,36 @@ function _PathParser(
             pathFrag.ext = "*";
         }
 
-        //if the base is regex then switch it to a wildcard
-        if (REGEX_PATT.test(pathFrag.base)) {
-
-            //append the base to the fragment
-            if(!!pathFrag.fragment) {
-                pathFrag.fragment+= pathFrag.sep + pathFrag.base;
-            }
-            else {
-                pathFrag.fragment = pathFrag.base;
-            }
-
-            //set the base to a wildcard
-            pathFrag.base = "*.*";
+        //if the base is regex then convert it to
+        if (!!pathFrag.base.match(REGEX_PATT)) {
+            pathFrag.filter = createRegExpPatt(pathFrag.base);
         }
-
-        //if the extension is regex then set the filter
-        if (REGEX_PATT.test(pathFrag.ext)) {
-            pathFrag.filter = new RegExp(
-                pathFrag.ext.match(REGEX_PATT)[1]
-            );
-            pathFrag.ext = "";
-        }
-
-        //if the name is regex then remove the name
-        if (REGEX_PATT.test(pathFrag.name)) {
-            pathFrag.name = "";
-        }
+    }
+    /**
+    * Creates a regular expression for the pattern string
+    * @function
+    */
+    function createRegExpPatt(pattStr) {
+        var regEntries = []
+        , clean = pattStr
+            .replace(REGEX_PATT, function replaceReg(match, regexp) {
+                regEntries.push(regexp);
+                return `<${regEntries.length - 1}>`;
+            })
+        , escaped = clean
+            .replace(ESCP_PATT, function replaceEsc(match) {
+                if (match.match(SEP_PATT)) {
+                    return "[\\/\\\\]";
+                }
+                return `[\\${match}]`;
+            })
+            .replace(ASTR_PATT, ".*")
+        , regexp = escaped
+            .replace(REGEX_PATT, function reinsertReg(match, num) {
+                var reg = regEntries[num];
+                return reg;
+            })
+        ;
+        return new RegExp(`${regexp}$`);
     }
 }
