@@ -14,6 +14,7 @@
 */
 function _DocExtractor(
     is
+    , utils_apply
     , defaults
 ) {
     /**
@@ -35,12 +36,12 @@ function _DocExtractor(
     * A regexp pattern for splitting an @ tag
     * @property
     */
-    , AT_TAG_PARTS_PATT = /^([^@]*)@([A-z_-]+)(?:\s+\{([A-z]+)\})?(?:\s+([^\s]+))?(\s+.+)?$/ms
+    , AT_TAG_PARTS_PATT = /([^@]*)@([A-z_-]+)(?:\s+\{([A-z]+)\})?(?:\s+((?:\[[^\]]+\])|(?:\{[^\}]+\})|(?:[^\s]+)))?(\s+.+)?$/ms
     /**
     * A regexp pattern for splitting an @ tag
     * @property
     */
-    , DESC_CLEAN_PATT =/^[ *\r\n]+(.+[^ \r\n])?(?:[ *\-\r\n]+)$/s
+    , DESC_CLEAN_PATT = /^(?:[ \*\-]*)?(.*?)(?:[ \*\-]*)$/
     ;
 
     /**
@@ -103,12 +104,16 @@ function _DocExtractor(
         , desc = stripAtTags(entry, atTags)
         //convert the tags into instances of `{iDocTag}`
         , convertedTags = convertTags(atTags)
-        ;
-        //create the instance of `{iDocEntry}`
-        return {
+        //get the
+        , properties = createTagTree(convertedTags)
+         //create the instance of `{iDocEntry}`
+        , docEntry = {
             "description": cleanDescription(desc)
-            , "attributes": createTagTree(convertedTags)
         };
+        //pply the properties to the doc entry
+        utils_apply(properties, docEntry);
+
+        return docEntry;
     }
     /**
     * Strips the @ tags from the entry and returns the description. Additionally, it adds the @ tags to the `atTags` array.
@@ -153,14 +158,26 @@ function _DocExtractor(
             tagObj = {
                 "indent": !!parts[1] && parts[1].length || 0
                 , "tag": parts[2]
-                , "type": parts[3]
-                , "name": parts[4]
-                , "desc": parts[5]
             };
+
+            !!parts[3] && (tagObj.type = parts[3]);
+            !!parts[4] && (tagObj.name = parts[4]);
+            !!parts[5] && (tagObj.desc = parts[5]);
+
             //clean the description
             if (!!tagObj.desc) {
                 tagObj.desc = tagObj.desc
-                    .replace(DESC_CLEAN_PATT, "$1");
+                    .split(LN_SPLIT_PATT)
+                    .map(function mapLine(line,indx) {
+                        return line.replace(DESC_CLEAN_PATT, "$1");
+                    })
+                    .filter(function filterLines(line) {
+                        if (is.empty(line)) {
+                            return false;
+                        }
+                        return true;
+                    })
+                    .join("\n");
             }
             //set the last tag for the next loop
             lastTag = tagObj
@@ -187,17 +204,27 @@ function _DocExtractor(
         , lastTag;
 
         convertedTags.forEach(function forEachTag(tagObj) {
-            if (!!lastTag) {
-                if (tagObj.indent > lastTag.indent) {
-                    if (!lastTag.attributes) {
-                        lastTag.attributes = {};
-                    }
-                    lastTag.attributes[tagObj.tag] = tagObj;
-                    return;
-                }
+            var curTag = tagTree;
+            //if there is a last tag,
+            //check the indent to see if this is a child
+            if (!!lastTag && tagObj.indent > lastTag.indent) {
+                curTag = lastTag;
             }
-            tagTree[tagObj.tag] = tagObj;
-            lastTag = tagObj;
+            //otherwise set the last tag
+            else {
+                lastTag = tagObj;
+            }
+
+            //see if this tag has been used before
+            if (curTag.hasOwnProperty(tagObj.tag)) {
+                if (!is.array(curTag[tagObj.tag])) {
+                    curTag[tagObj.tag] = [];
+                }
+                curTag[tagObj.tag].push(tagObj);
+            }
+            else {
+                curTag[tagObj.tag] = tagObj;
+            }
         });
 
         return tagTree;
