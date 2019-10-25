@@ -1,0 +1,12 @@
+{
+    "config": {
+        "secure": true
+        , "singleApp": true
+        , "options": {
+            "cert": null
+            , "key": null
+        }
+    }
+    , "securePort": 443
+    , "port": 80
+}

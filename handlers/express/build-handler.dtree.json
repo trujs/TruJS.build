@@ -1,0 +1,33 @@
+{
+    "defaults": [
+        ":TruJS.build.handlers.express.Defaults"
+        , {"conflictResolution": "error"}
+    ]
+    , "errors": [
+        ":TruJS.build.handlers.express.Errors"
+        , {"conflictResolution": "error"}
+    ]
+    , "buildHandlers": [{
+        "express": [{
+            "initialize": [":TruJS.build.handlers.express._ExpressInitializer", []]
+            , "collect": [":TruJS.build.handlers.file._FileCollector", []]
+            , "preprocess": [":TruJS.build.handlers.express._ExpressPreProcessor", []]
+            , "assemble": [":TruJS.build.handlers.ioc.monolith._MonolithAssembler", []]
+            , "format": [":TruJS.build.handlers.ioc.monolith._MonolithFormatter", []]
+            , "save": [":TruJS.build.handlers.file._FileSaver", []]
+        }]
+        , "ioc": [{
+            "monolith": [{
+                "initialize": [":TruJS.build.handlers.ioc.monolith._MonolithInitializer", []]
+                , "preprocess": [":TruJS.build.handlers.ioc.monolith._MonolithPreProcessor", []]
+            }]
+        }]
+    }]
+    , "buildHelpers": [{
+        "express": [{
+            "expressKitCreator": [":TruJS.build.handlers.express.helpers._ExpressKitCreator", []]
+            , "kitDepTreeUpdater": [":TruJS.build.handlers.express.helpers._KitDepTreeUpdater", []]
+            , "dependencies": [":TruJS.build.handlers.express.helpers.ServerDependencies"]
+        }]
+    }]
+}

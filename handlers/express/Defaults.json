@@ -1,0 +1,8 @@
+{
+    "routeBranchName": "$route$"
+    , "routeKitName": "RouteKit.json"
+    , "routeServerNamespace": "TruJS.build.handlers.express.helpers._Server"
+    , "config": {
+        "routeEntry": ".route.js"
+    }
+}
