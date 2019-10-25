@@ -5,7 +5,7 @@
 function _FileSaver(
     promise
     , nodePath
-    , nodeFs
+    , fs_fileWriter
     , workspacePath
     , defaults
 ) {
@@ -19,19 +19,20 @@ function _FileSaver(
         , assets
     ) {
         //loop through the assets, determine destination, save asset
-        return new promise(
-            startSaveLoop.bind(null, entry, assets)
+        return startSaveLoop(
+            entry
+            , assets
         );
     };
 
     /**
     * @function
     */
-    function startSaveLoop(entry, assets, resolve, reject) {
+    function startSaveLoop(entry, assets) {
         try {
             //if there isn't an output property then skip saving
             if (!entry.config.output) {
-                resolve();
+                return promise.resolve();
             }
 
             var procs = []
@@ -48,42 +49,34 @@ function _FileSaver(
 
             assets.forEach(function forEachAsset(asset) {
                 procs.push(
-                    new promise(
-                        saveFile.bind(null, entry, asset, outputPath)
+                    saveFile(
+                        entry
+                        , asset
+                        , outputPath
                     )
                 );
             });
 
-            resolve(
-                promise.all(procs)
-            );
+            return promise.all(procs);
         }
         catch(ex) {
-            reject(ex);
+            return promise.reject(ex);
         }
     }
     /**
     * @function
     */
-    function saveFile(entry, asset, outputPath, resolve, reject) {
+    function saveFile(entry, asset, outputPath) {
         try {
             var path = determineOutputPath(entry, asset, outputPath);
 
-            nodeFs.writeFile(
+            return fs_fileWriter(
                 path
                 , asset.data
-                , function writeFileCb(err) {
-                    if (!!err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve();
-                    }
-                }
             );
         }
         catch(ex) {
-            reject(ex);
+            return promise.reject();
         }
     }
     /**
@@ -115,7 +108,7 @@ function _FileSaver(
         if (!nodePath.extname(outputPath)) {
             outputPath = nodePath.join(
                 outputPath
-                , config[defaults.assembledFileNamePropertyName]
+                , config.appFileName
             );
         }
 

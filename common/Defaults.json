@@ -6,6 +6,7 @@
         , "gif": "binary"
     }
     , "sourceDirectory": "source"
+    , "pathsPropertyName": "paths"
     , "docEntryPropertyName": "docs"
     , "dtreeName": "dtree.json"
     , "jsDocExt": [
@@ -15,7 +16,6 @@
         ".js"
         , ".json"
     ]
-    , "assembledFileNamePropertyName": "appFileName"
     , "config": {
         "hideGlobals": [
             "require"
@@ -25,8 +25,14 @@
             , "exports"
             , "eval"
             , "window"
+            , "document"
+            , "body"
         ]
         , "buildsDirectory": "build"
-        , "appFileName": "app"
+        , "appFileName": "app.js"
+        , "excludePaths": [
+            "*manifest.json"
+            , "*dtree.json"
+        ]
     }
 }
