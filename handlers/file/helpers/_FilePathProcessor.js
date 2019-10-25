@@ -53,15 +53,11 @@ function _FilePathProcessor(
             var procPath = buildHelpers_buildPathProcessor(
                 path
                 , projectName
-            )
-            //the path parser requires a fq path
-            , fqpath = nodePath.resolve(
-                procPath
             );
             //parse the path
             return promise.resolve(
                 buildHelpers_pathParser(
-                    fqpath
+                    procPath
                 )
             );
         }
