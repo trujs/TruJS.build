@@ -3,8 +3,8 @@
 * @factory
 */
 function _ModuleDataCreator(
-    buildHelpers_trujs_module_namespaceDataCreator
-    , buildHelpers_trujs_module_aliasDataCreator
+    buildHelpers_module_namespaceDataCreator
+    , buildHelpers_module_aliasDataCreator
     , utils_lookup
     , utils_copy
     , errors
@@ -12,11 +12,11 @@ function _ModuleDataCreator(
     /**
     * @alias
     */
-    var namespaceDataCreator = buildHelpers_trujs_module_namespaceDataCreator
+    var namespaceDataCreator = buildHelpers_module_namespaceDataCreator
     /**
     * @alias
     */
-    , aliasDataCreator = buildHelpers_trujs_module_aliasDataCreator
+    , aliasDataCreator = buildHelpers_module_aliasDataCreator
     /**
     * A reg exp pattern for splitting namespaces
     * @property
