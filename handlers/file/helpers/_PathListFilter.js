@@ -1,5 +1,5 @@
 /**
-* 
+*
 * @factory
 */
 function _PathListFilter(
@@ -11,15 +11,20 @@ function _PathListFilter(
     , errors
 ) {
     /**
-    * A regular expression pattern for splitting paths
+    * A regular expression pattern for finding path seperators
     * @property
     */
-    var SPLIT_PATT = /[\\\/]/g
+    var SEP_PATT = /[\\\/]/g
+    /**
+    * A regexp pattern for finding characters that need escaping
+    * @property
+    */
+    , ESCP_PATT = /[\\\/\.\:]/g
     /**
     * A regular expression pattern for identifying the reg exp in path segments
     * @property
     */
-    , REG_PATT = /(?:\[([^\]]+)\])|([.])/g
+    , REG_PATT = /<((?:[^>]|(?:(?<=[\\])[>]))+)>/g
     /**
     * A regular expression pattern to look for asterisks
     * @property
@@ -40,8 +45,8 @@ function _PathListFilter(
             return combineChildren(resultsAr);
         })
         //then remove any minus matches
-        .then(function thenRemoveMinusPaths(paths) {
-            return removeMinusPaths(paths);
+        .then(function thenFilterPaths(paths) {
+            return filterPaths(paths);
         })
         //then parse the path
         .then(function thenParsePaths(paths) {
@@ -83,7 +88,21 @@ function _PathListFilter(
         try {
             var pathList = [];
 
-            if (!pathInfo.hasOwnProperty("children")) {
+            //if the path fragment is a minus, send the match path regexp
+            if (pathInfo.path.minus) {
+                resolve([pathInfo.path.matchPath]);
+                return;
+            }
+            //if the path is a containr without children, return nothin
+            if (
+                pathInfo.isContainer
+                && pathInfo.children.length === 0
+            ) {
+                resolve([]);
+                return;
+            }
+            //if this is not a container then return the path
+            if (!pathInfo.isContainer) {
                 resolve([pathInfo.path.fqpath]);
                 return;
             }
@@ -91,13 +110,8 @@ function _PathListFilter(
             //loop through the children
             pathInfo.children
             .forEach(function forEachChildPath(childPath) {
-
                 //see if the child path matches the path fragment
                 if (testChild(pathInfo, childPath)) {
-                    //add minus sign
-                    if (pathInfo.path.modifier.indexOf("-") !== -1) {
-                        childPath = `-${childPath}`;
-                    }
                     //add the path to the list
                     pathList.push(
                         childPath
@@ -116,62 +130,14 @@ function _PathListFilter(
     * @function
     */
     function testChild(pathInfo, childPath) {
-        var childSegs = childPath.split(SPLIT_PATT)
-        , path = pathInfo.path
-        , isRecursive = path.modifier.indexOf("r") !== -1
-        , pathSegs = pathInfo.path.segments
-        , pathSegsLastIndx = pathSegs.length - 1;
+        var testPath = pathInfo.path
+        , updPath = childPath.replace(SEP_PATT, "/")
+        ;
 
-        //loop throught the child segments and see if they match the path
-        return childSegs.every(function everyChildSeg(childSeg, indx) {
-            //if this index is greater than the last path index we are at the end of the path segments
-            if (pathSegsLastIndx < indx) {
-                //if this is recursive then we're good to go
-                if (isRecursive) {
-                    //we'll just accept all of the segments from here on
-                    return true;
-                }
-                return false;
-            }
-
-            var pathSeg = pathSegs[indx];
-
-            //update any wild cards
-            pathSeg = pathSeg.replace(
-                ASTR_PATT
-                , function replaceAStr() {
-                    return "[.+]";
-                }
-            );
-
-            //see if the path segment is reg ex
-            if (REG_PATT.test(pathSeg)) {
-                return testSeg(pathSeg, childSeg);
-            }
-            else if (pathSeg === childSeg) {
-                return true;
-            }
-
-            return false;
-        });
-    }
-    /**
-    * Matches the child segment to the path segment, processing any regexp patterns
-    * @function
-    */
-    function testSeg(pathSeg, childSeg) {
-        var fullRegExpStr = pathSeg.replace(
-            REG_PATT
-            , function replaceReg(str, patt) {
-                if (!patt) {
-                    return "[.]";
-                }
-                return patt;
-            }
-        )
-        , regexp = new RegExp(fullRegExpStr);
-
-        return regexp.test(childSeg);
+        if (testPath.matchPath.test(updPath)) {
+            return true;
+        }
+        return false;
     }
     /**
     * Combines the array or path arrays into a single array of paths
@@ -200,30 +166,48 @@ function _PathListFilter(
     /**
     * @function
     */
-    function removeMinusPaths(paths) {
+    function filterPaths(paths) {
         try {
             var pathList = [];
 
-            //add the paths to the path list until the minus entries are found
+            //loop through the paths
             paths.forEach(function forEachPath(path) {
-                if (path[0] === "-") {
-                    pathList.splice(
-                        pathList.indexOf(
-                            path.substring(1)
-                        )
-                        , 1
-                    );
+                //and if it's a string then add it
+                if (typeof path === "string") {
+                    //but only if it doesn't exist, making it distinct
+                    if (pathList.indexOf(path) === -1) {
+                        pathList.push(path);
+                    }
                 }
+                //otherwise we're assuming it's regex, which means it's a minus
                 else {
-                    pathList.push(path);
+                    pathList = removeMinusPath(
+                        pathList
+                        , path
+                    );
                 }
             });
 
             return promise.resolve(pathList);
+
         }
         catch (ex) {
             return promise.reject(ex);
         }
+    }
+    /**
+    * @function
+    */
+    function removeMinusPath(pathList, minus) {
+        var newList = [];
+
+        pathList.forEach(function forEachPath(path) {
+            if (!path.match(minus)) {
+                newList.push(path);
+            }
+        });
+
+        return newList;
     }
     /**
     * @function
