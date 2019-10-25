@@ -16,6 +16,7 @@
     , "nodePath": ["+require('path')"]
     , "nodeFs": ["+require('fs')"]
     , "promise": ["+Promise"]
+
     , "utils": [{
         "copy": [":TruJS.core.Copy"]
         , "apply": [":TruJS.core.Apply"]
@@ -35,11 +36,13 @@
         , "string": [":TruJS.core.is.String"]
         , "object": [":TruJS.core.is.Object"]
         , "regexp": [":TruJS.core.is.RegExp"]
+        , "empty": [":TruJS.core.is.Empty"]
     }]
     , "fs": [{
         "filePathInfo": [":TruJS.core.fs._FilePathInfo", []]
         , "fileInfo": [":TruJS.core.fs._FileInfo", []]
         , "fileLoader": [":TruJS.core.fs._FileLoader", []]
+        , "fileWriter": [":TruJS.core.fs._FileWriter", []]
     }]
     , "$run$": [":TruJS.build.runner._BuildRunner",[]]
     , "buildInit": [":TruJS.build.runner._BuildInit",[]]
