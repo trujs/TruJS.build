@@ -4,30 +4,36 @@
 */
 function _FileCollector(
     promise
-    , buildHelpers_trujs_file_filePathProcessor
-    , buildHelpers_trujs_file_multiPathLoader
-    , buildHelpers_trujs_file_pathListFilter
-    , buildHelpers_trujs_file_checkoutRepositories
+    , buildHelpers_file_filePathProcessor
+    , buildHelpers_file_multiPathLoader
+    , buildHelpers_file_pathListFilter
+    , buildHelpers_file_checkoutRepositories
+    , buildHelpers_pathParser
     , is_object
+    , is_array
     , reporter
     , errors
 ) {
     /**
     * @alias
     */
-    var filePathProcessor = buildHelpers_trujs_file_filePathProcessor
+    var filePathProcessor = buildHelpers_file_filePathProcessor
     /**
     * @alias
     */
-    , multiPathLoader = buildHelpers_trujs_file_multiPathLoader
+    , multiPathLoader = buildHelpers_file_multiPathLoader
     /**
     * @alias
     */
-    , pathListFilter = buildHelpers_trujs_file_pathListFilter
+    , pathListFilter = buildHelpers_file_pathListFilter
     /**
     * @alias
     */
-    , checkoutRepositories = buildHelpers_trujs_file_checkoutRepositories
+    , checkoutRepositories = buildHelpers_file_checkoutRepositories
+    /**
+    * @alias
+    */
+    , pathParser = buildHelpers_pathParser
     ;
 
     /**
@@ -61,6 +67,12 @@ function _FileCollector(
             if (paths.length === 0) {
                 return promise.resolve(paths);
             }
+            //add the exclusions from the config
+            addPathExclusions(
+                paths
+                , entry.config
+            );
+            //filter the paths
             return pathListFilter (
                 paths
             );
@@ -82,7 +94,7 @@ function _FileCollector(
     * @function
     */
     function processFilePaths(entry) {
-        var files = entry.files, procs = [];
+        var files = entry.paths, procs = [];
 
         if (!Array.isArray(files)) {
             if (!is_object(entry.include)) {
@@ -106,5 +118,23 @@ function _FileCollector(
         });
 
         return Promise.all(procs);
+    }
+    /**
+    * Adds the path exclusions to the paths array
+    * @function
+    */
+    function addPathExclusions(paths, config) {
+        if (is_array(config.excludePaths)) {
+            config.excludePaths
+            .forEach(function forEachExclude(path) {
+                var pathFrag = pathParser(path);
+                pathFrag.minus = true;
+                paths.push(
+                    {
+                        "path": pathFrag
+                    }
+                );
+            });
+        }
     }
 }
