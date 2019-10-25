@@ -26,29 +26,22 @@ function _FilePathInfo(
     */
     function getFilePathInfo(pathFrag) {
         //get the path to use for the meta lookup
-        var path = pathFrag.fqpath
+        var path = pathFrag.startInPath
         , options = {
-            "recurse": false
+            "recurse": !!pathFrag.recursive
             , "filter": pathFrag.filter
         }
         , proc;
-        //if there is a recursive modifier or a fragment use the dir property
-        if (
-            !!pathFrag.fragment
-            || pathFrag.modifier.indexOf("r") !== -1
-        ) {
-            path = pathFrag.dir;
-            options.recurse = true;
-        }
         //add the file extension filter
         if (
             !!pathFrag.ext
             && pathFrag.ext !== "*"
+            && !options.filter
         ) {
             options.filter = [pathFrag.ext];
         }
         //skip looking up the path info if this is a minus
-        if (pathFrag.modifier.indexOf("-") === -1) {
+        if (!pathFrag.minus) {
             //get the file path info for the path
             proc = fs_filePathInfo(
                 path
