@@ -1,6 +1,7 @@
 {
     "buildSteps": [
-        "collect"
+        "initialize"
+        , "collect"
         , "preprocess"
         , "assemble"
         , "format"
