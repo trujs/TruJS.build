@@ -11,7 +11,7 @@ function _BuildPathProcessor(
     * A reg exp pattern for parsing the build path
     * @property
     */
-    var BLD_PATH_PATT = /^(\[[A-z0-9, ]+\])?(?:(?:\{([A-z][A-z0-9_.]*)\})|([.]?[\/]|[A-Z]+[:][\/\\]))?(.*)$/
+    var BLD_PATH_PATT = /^(\[[A-z0-9, \-+<>]+\])?(?:(?:\{([A-z][A-z0-9_.]*)\})|([.]?[\/]|[A-Z]+[:][\/\\]))?(.*)$/
     /**
     * A reg exp for replacing windows path seperators
     * @property
@@ -36,15 +36,13 @@ function _BuildPathProcessor(
         var pathObj = parseBuildPath(
             buildPath
             , projectName
-        );
-        //if the path is absolute, no need to do anything else
-        if (pathObj.isAbsolute) {
-            return buildPath;
-        }
-        //create the fully qualified path
-        return createProjectPath(
+        )
+        //get the fully qualified path
+        , fqpath = createFullyQualifiedPath(
             pathObj
         );
+
+        return fqpath;
     };
 
     /**
@@ -94,12 +92,24 @@ function _BuildPathProcessor(
     * Creates a fully qualified path string using the path object and the project name
     * @function
     */
-    function createProjectPath(pathObj) {
+    function createFullyQualifiedPath(pathObj) {
         var depPath = pathObj.path.replace(LEADING_SEP_PATT, "")
         , projectPath = `${pathObj.project.replace(DOT_PATT, "/")}/`
         , mod = pathObj.modifier
         , root = pathObj.root
-        , path = `${mod}${root}${projectPath}${depPath}`;
+        , path;
+
+        //if this is an absolute path then return it
+        if (pathObj.isAbsolute) {
+            path = `${mod}${root}${depPath}`
+        }
+        //if the project path is not in the dependency path, then include it
+        else if (depPath.indexOf(projectPath) === -1) {
+             path = `${mod}${root}${projectPath}${depPath}`;
+        }
+        else {
+             path = `${mod}${root}${depPath}`;
+        }
 
         //standardize the seperators
         path = path.replace(WIN_SEP_PATT, "/");
