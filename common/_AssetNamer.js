@@ -3,7 +3,7 @@
 * @factory
 * @interface
 */
-function _ModuleNamer(
+function _AssetNamer(
     defaults
     , workspacePath
 ) {
@@ -12,6 +12,11 @@ function _ModuleNamer(
     * @property
     */
     var LEADING_SEP_PATT =/^[\/\\]+/
+    /**
+    * A regexp pattern for finding path seperators
+    * @property
+    */
+    , SEP_PATT = /[\/\\]/g
     /**
     * A regexp pattern for splitting a path by the seperators
     * @property
@@ -22,13 +27,13 @@ function _ModuleNamer(
     /**
     * @worker
     */
-    return function ModuleNamer(asset) {
+    return function AssetNamer(asset) {
         //get the naming attribute from the assets docs and any children
-        var naming = getNamingAttribute(asset.docs) || {}
+        var naming = getNamingProperty(asset.docs) || {}
         , nameObj;
         //if we found a naming attribute then convert it to an instance of `{iNaming}`
         if (!!naming) {
-            naming = convertNamingAttribute(naming);
+            naming = convertNamingProperty(naming);
         }
         //use the path to determine any missing values
         asset.naming = createNaming(naming, asset.path);
@@ -38,7 +43,7 @@ function _ModuleNamer(
     * Finds the first naming attribute
     * @function
     */
-    function getNamingAttribute(docs) {
+    function getNamingProperty(docs) {
         if (!docs) {
             return;
         }
@@ -46,8 +51,8 @@ function _ModuleNamer(
         var naming;
 
         docs.every(function everyDoc(doc) {
-            if (doc.attributes.hasOwnProperty("naming")) {
-                naming = doc.attributes.naming;
+            if (doc.hasOwnProperty("naming")) {
+                naming = doc.naming;
                 return false;
             }
             return true;
@@ -58,17 +63,14 @@ function _ModuleNamer(
     /**
     * @function
     */
-    function convertNamingAttribute(naming) {
-        var attrs = naming.attributes
+    function convertNamingProperty(naming) {
+        var attrs = naming
         , nameObj = {};
 
-        if (!!attrs) {
-            Object.keys(attrs)
-            .forEach(function forEachAttr(key) {
-
-                nameObj[attrs[key].tag] = attrs[key].name ;
-            });
-        }
+        Object.keys(naming)
+        .forEach(function forEachAttr(key) {
+            nameObj[key] = naming[key] ;
+        });
 
         return nameObj;
     }
@@ -104,9 +106,10 @@ function _ModuleNamer(
     * @function
     */
     function getRelativePath(dir) {
+        var standardizedDir = dir.replace(SEP_PATT, "/");
         //remove the workspace path
-        return dir.replace(
-            workspacePath
+        return standardizedDir.replace(
+            workspacePath.replace(SEP_PATT, "/")
             , ""
         )
         //remove the source directory
