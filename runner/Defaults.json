@@ -5,13 +5,16 @@
         , "preprocess"
         , "assemble"
         , "format"
+        , "package"
         , "save"
     ]
     , "includeProperties": {
-        "collectProperty": "post-collect"
+        "initializeProperty": "post-initialize"
+        , "collectProperty": "post-collect"
         , "preprocessProperty": "post-preprocess"
         , "assembleProperty": "post-assemble"
         , "formatProperty": "post-format"
+        , "packageProperty": "post-package"
     }
     , "configFileName": "config.json"
     , "manifestFileName": "manifest.json"
