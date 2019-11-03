@@ -80,7 +80,7 @@ function _FilePathProcessor(
             path = modMatch[2];
         }
 
-        //standardize the path seperator to make is easier to deal with
+        //standardize the path separater to make is easier to deal with
         path = path.replace(SEP_PATT, "/");
 
         //if the path starts with a . then we begin at the project's root

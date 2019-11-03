@@ -13,7 +13,7 @@ function _BuildPathProcessor(
     */
     var BLD_PATH_PATT = /^(\[[A-z0-9, \-+<>]+\])?(?:(?:\{([A-z][A-z0-9_.]*)\})|([.]?[\/]|[A-Z]+[:][\/\\]))?(.*)$/
     /**
-    * A reg exp for replacing windows path seperators
+    * A reg exp for replacing windows path separaters
     * @property
     */
     , WIN_SEP_PATT = /[\\]/g
@@ -23,7 +23,7 @@ function _BuildPathProcessor(
     */
     , DOT_PATT = /[.]/g
     /**
-    * A reg exp pattern for replacing leading path seperators
+    * A reg exp pattern for replacing leading path separaters
     * @property
     */
     , LEADING_SEP_PATT = /^[\\\/]/;
@@ -111,7 +111,7 @@ function _BuildPathProcessor(
              path = `${mod}${root}${depPath}`;
         }
 
-        //standardize the seperators
+        //standardize the separaters
         path = path.replace(WIN_SEP_PATT, "/");
 
         return path;

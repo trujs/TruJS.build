@@ -131,7 +131,7 @@ function _BuildInit(
             !!cmdArgs.command
             && fallback
         ) {
-            //no FS path seperator, must be the project name
+            //no FS path separater, must be the project name
             if (cmdArgs.command.indexOf("/") === -1
                 && cmdArgs.command.indexOf("\\") === -1) {
                 path = cmdArgs.command

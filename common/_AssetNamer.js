@@ -8,17 +8,17 @@ function _AssetNamer(
     , workspacePath
 ) {
     /**
-    * A regexp pattern for removing leading seperators from the relative path
+    * A regexp pattern for removing leading separaters from the relative path
     * @property
     */
     var LEADING_SEP_PATT =/^[\/\\]+/
     /**
-    * A regexp pattern for finding path seperators
+    * A regexp pattern for finding path separaters
     * @property
     */
     , SEP_PATT = /[\/\\]/g
     /**
-    * A regexp pattern for splitting a path by the seperators
+    * A regexp pattern for splitting a path by the separaters
     * @property
     */
     , SEP_SPLIT_PATT = /[\/\\]/g
@@ -117,7 +117,7 @@ function _AssetNamer(
             defaults.sourceDirectory
             , ""
         )
-        //remove the left over path seperators from the begining
+        //remove the left over path separaters from the begining
         .replace(
             LEADING_SEP_PATT
             , ""

@@ -11,7 +11,7 @@ function _PathListFilter(
     , errors
 ) {
     /**
-    * A regular expression pattern for finding path seperators
+    * A regular expression pattern for finding path separaters
     * @property
     */
     var SEP_PATT = /[\\\/]/g

@@ -52,7 +52,7 @@ function _ExpressKitCreator(
     */
     , PARSE_PATT = /^(?:\[[^\]]*\])|(?:\{[^\}]*\})$/
     /**
-    * A reg exp pattern for replacing windows path seperators
+    * A reg exp pattern for replacing windows path separaters
     * @property
     */
     , SEP_PATT = /[\\]+/g
