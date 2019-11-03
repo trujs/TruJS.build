@@ -2,9 +2,9 @@
 * The module data creator turns the array of assets into an array of dependency entries; root namespace declared with var, assignment statements and namespace aliasing
 * @factory
 */
-function _ModuleDataCreator(
-    buildHelpers_module_namespaceDataCreator
-    , buildHelpers_module_aliasDataCreator
+function _AssetDataCreator(
+    buildHelpers_javascript_namespaceDataCreator
+    , buildHelpers_javascript_aliasDataCreator
     , utils_lookup
     , utils_copy
     , errors
@@ -12,11 +12,11 @@ function _ModuleDataCreator(
     /**
     * @alias
     */
-    var namespaceDataCreator = buildHelpers_module_namespaceDataCreator
+    var namespaceDataCreator = buildHelpers_javascript_namespaceDataCreator
     /**
     * @alias
     */
-    , aliasDataCreator = buildHelpers_module_aliasDataCreator
+    , aliasDataCreator = buildHelpers_javascript_aliasDataCreator
     /**
     * A reg exp pattern for splitting namespaces
     * @property
@@ -27,7 +27,7 @@ function _ModuleDataCreator(
     /**
     * @worker
     */
-    return function ModuleDataCreator(assets) {
+    return function AssetDataCreator(assets) {
         //generate a collection of namespaces
         var namespaces = createNamespaceCollection(
             assets

@@ -4,6 +4,7 @@
 */
 function _ModuleFormatter(
     promise
+    , buildHandlers_javascript_format
     , is_array
 ) {
     /**
@@ -16,7 +17,12 @@ function _ModuleFormatter(
             , "browser": "export default "
         }
         , "defaultEngine": "browser"
-    };
+    }
+    /**
+    * @alias
+    */
+    , javascriptFormat = buildHandlers_javascript_format
+    ;
 
     /**
     * @worker
@@ -25,9 +31,17 @@ function _ModuleFormatter(
         entry
         , assets
     ) {
+        //format the module
         return new promise(
             formatAssets.bind(null, entry, assets)
-        );
+        )
+        //then format the javascript
+        .then(function thenFormatJavascript(updateAssets) {
+            return javascriptFormat(
+                entry
+                , updateAssets
+            );
+        });
     };
 
     /**
@@ -39,13 +53,13 @@ function _ModuleFormatter(
             , modData = modFile.data
             , statement
             , engine = entry.config.engine || cnsts.defaultEngine
-            , exp = entry.config.export;
+            , exp = entry.config.export
+            , exportCmd = `${cnsts.export[engine]}${exp};`;
 
             //add the export statement
-            modData = `${modData}\n\n${cnsts.export[engine]}${exp};`;
+            modData = `${modData}\n\n${exportCmd}`;
 
             if(!!entry.module) {
-
                 //add any statements
                 if (!!entry.module.statements) {
                     if (!!entry.module.statements.beginning) {
@@ -62,10 +76,6 @@ function _ModuleFormatter(
                         }
                         modData = `${statement}\n\n${modData}`;
                     }
-                }
-                //add strict
-                if (entry.module.strict === true) {
-                    modData = `"use strict";\n\n${modData}`;
                 }
             }
 

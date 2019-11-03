@@ -2,7 +2,7 @@
 *
 * @factory
 */
-function _ModulePreProcessor(
+function _JavaScriptPreProcessor(
     promise
     , buildHelpers_docExtractor
     , buildHelpers_assetNamer
@@ -11,7 +11,7 @@ function _ModulePreProcessor(
     /**
     * @worker
     */
-    return function ModulePreProcessor(
+    return function JavaScriptPreProcessor(
         entry
         , assets
     ) {

@@ -2,9 +2,9 @@
 *
 * @factory
 */
-function _ModuleAssembler(
+function _JavaScriptAssembler(
     promise
-    , buildHelpers_module_moduleDataCreator
+    , buildHelpers_javascript_assetDataCreator
     , fs_fileInfo
     , reporter
     , defaults
@@ -13,12 +13,12 @@ function _ModuleAssembler(
     /**
     * @alias
     */
-    var moduleDataCreator = buildHelpers_module_moduleDataCreator;
+    var assetDataCreator = buildHelpers_javascript_assetDataCreator;
 
     /**
     *  @worker
     */
-    return function ModuleAssembler(
+    return function JavaScriptAssembler(
         entry
         , assets
     ) {
@@ -28,10 +28,13 @@ function _ModuleAssembler(
         )
         //then join the entries and create a single file
         .then(function thenCreateAsset(dataArray) {
+            if (dataArray.length === 0) {
+                return promise.resolve([]);
+            }
             return new promise(
                 createAssembledAsset.bind(null, entry, dataArray)
             );
-        })
+        });
     };
 
     /**
@@ -39,7 +42,7 @@ function _ModuleAssembler(
     */
     function convertAssets(entry, assets, resolve, reject) {
         try {
-            var moduleEntries = moduleDataCreator(
+            var moduleEntries = assetDataCreator(
                 assets
             );
 
