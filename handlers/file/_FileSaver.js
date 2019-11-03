@@ -7,6 +7,7 @@ function _FileSaver(
     , nodePath
     , fs_fileWriter
     , workspacePath
+    , is_nill
     , defaults
 ) {
 
@@ -18,6 +19,10 @@ function _FileSaver(
         entry
         , assets
     ) {
+        //if there isn't an output config then skip
+        if (is_nill(entry.config.output)) {
+            return promise.resolve([]);
+        }
         //loop through the assets, determine destination, save asset
         return startSaveLoop(
             entry
