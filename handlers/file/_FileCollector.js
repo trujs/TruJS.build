@@ -94,7 +94,7 @@ function _FileCollector(
     * @function
     */
     function processFilePaths(entry) {
-        var files = entry.paths, procs = [];
+        var files = entry[defaults.pathsPropertyName], procs = [];
 
         if (!Array.isArray(files)) {
             if (!is_object(entry.include)) {

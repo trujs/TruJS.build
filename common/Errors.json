@@ -9,7 +9,7 @@
     , "file_path_load": "[File Path Load] Failed to load 1 or more file paths."
     , "duplicate_namespace": "[Duplicate Namespace] One or more namespaces has been used more than once."
     , "invalid_build_path": "[Invalid Build Path] The value did not match the build path pattern."
-    , "invalid_files_property": "[Invalid Files Property] The files property should be an array."
+    , "invalid_paths_property": "[Invalid Files Property] The files property should be an array."
     , "invalid_dependency_annotation": "[Invalid Dependency Annotation] The factory dependency annotations must use dependency notation."
     , "EACCES": "(Permission denied): An attempt was made to access a file in a way forbidden by its file access permissions."
     , "EEXIST": "(File exists): An existing file was the target of an operation that required that the target not exist."

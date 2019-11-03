@@ -53,11 +53,12 @@ function _MonolithInitializer(
             var paths = getfilePaths(pathObjs);
             //if there isn't a files property, add one
             if (!entry.hasOwnProperty(defaults.pathsPropertyName)) {
-                entry.paths = paths;
+                entry[defaults.pathsPropertyName] = paths;
             }
             //otherwise concat the 2 arrays
             else {
-                entry.paths = paths.concat(entry.paths);
+                entry[defaults.pathsPropertyName] =
+                    paths.concat(entry[defaults.pathsPropertyName]);
             }
             //add the paths to the entry
             entry.dtreeEntries = pathObjs;

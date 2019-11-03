@@ -61,14 +61,15 @@ function _ExpressInitializer(
             //if the files entry is not an array
             if (!is_array(entry[defaults.pathsPropertyName])) {
                 throw new Error(
-                    `${errors.invalid_files_property} (${typeof entry[defaults.pathsPropertyName]})`
+                    `${errors.invalid_paths_property} (${typeof entry[defaults.pathsPropertyName]})`
                 );
             }
             ///END INPUT VALIDATION
 
             //see if there is an entry with route.js in it
             if (!hasRouteEntry(entry)) {
-                entry.paths.push(
+                entry[defaults.pathsPropertyName]
+                .push(
                     `[r]./*${entry.config.routeEntry}`
                 );
             }
