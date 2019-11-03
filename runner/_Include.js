@@ -7,6 +7,7 @@
 function _Include(
     promise
     , is_nill
+    , utils_copy
     , defaults
     , processDetails
     , reporter
@@ -75,7 +76,7 @@ function _Include(
         ///END LOGGING
         //loop through the include array
         includeAr.forEach(function forEachValue(include) {
-            var includeAssets = assets[include];
+            var includeAssets = utils_copy(assets[include]);
             if (Array.isArray(includeAssets)) {
                 entryAssets = entryAssets.concat(includeAssets);
             }
