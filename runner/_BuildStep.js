@@ -165,7 +165,8 @@ function _BuildStep(
                 typeName
                 , buildHandlers
             )
-            , stepHandler, stepProcDetail;
+            , stepHandler, stepProcDetail
+            , entryName = entry.name || "unnamed";
 
             if (!buildType) {
                 throw new Error(`${errors.invalid_build_type} (${typeName})`);
@@ -173,7 +174,7 @@ function _BuildStep(
 
             ///LOGGING
             stepProcDetail = processDetails(
-                `${stepName}.${typeName}`
+                `${stepName}.${typeName}.${entryName}`
                 , "_BuildStep.executeStepHandler"
                 , procDetail
             );
@@ -185,7 +186,7 @@ function _BuildStep(
             if (!!stepHandler) {
                 ///LOGGING
                 reporter.info(
-                    `Step handler for "${typeName}" Started`
+                    `Step handler for "[${typeName}] ${entryName}" Started`
                     , stepProcDetail
                 );
                 ///END LOGGING
@@ -201,7 +202,7 @@ function _BuildStep(
                     assets = assets || [];
                     ///LOGGING
                     reporter.info(
-                        `Step Handler for "${typeName}" Completed with ${assets.length} Asset(s)`
+                        `Step Handler for "{${typeName}} ${entryName}" Completed with ${assets.length} Asset(s)`
                         , stepProcDetail
                     );
                     ///END LOGGING
@@ -210,8 +211,8 @@ function _BuildStep(
             }
             else {
                 ///LOGGING
-                reporter.info(
-                    `Step handler for "${typeName}" Skipped`
+                reporter.extended(
+                    `Step handler for "{${typeName}} ${entryName}" was Skipped`
                     , stepProcDetail
                 );
                 ///END LOGGING
