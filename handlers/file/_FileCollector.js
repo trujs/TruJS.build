@@ -12,6 +12,7 @@ function _FileCollector(
     , is_object
     , is_array
     , reporter
+    , defaults
     , errors
 ) {
     /**
