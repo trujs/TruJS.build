@@ -20,10 +20,10 @@
                 , "{TruJS.build.handlers.ioc}/build-handler.dtree.json"
                 , "{TruJS.build.handlers.express}/build-handler.dtree.json"
             ]
-            , "engine": "node"
             , "config": {
                 "dtreeFileName": "builder-dtree.js"
                 , "appFileName": "builder-node.js"
+                , "engine": "node"
                 , "output": "TruJS/builder/"
             }
         }

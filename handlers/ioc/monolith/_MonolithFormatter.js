@@ -12,8 +12,10 @@ function _MonolithFormatter(
     * @property
     */
     var cnsts = {
-        "nodeExport": "module.exports = "
-        , "browserExport": "export default "
+        "export": {
+            "node": "module.exports = "
+            , "browser": "export default "
+        }
         , "defaultEngine": "browser"
     };
 
@@ -67,17 +69,11 @@ function _MonolithFormatter(
     * @function
     */
     function createDependencyTree(entry) {
-        var env = entry.engine || cnsts.defaultEngine
-        , exp = cnsts[`${env}Export`]
+        var engine = entry.config.engine || cnsts.defaultEngine
+        , exp = cnsts.export[engine]
         , data = JSON.stringify(entry.dtree);
 
         return `${exp}\n${data};`
             .replace(/\r?\n/g, "\n    ");
-    }
-    /**
-    * @function
-    */
-    function createTreeEntry(tree) {
-        return JSON.stringify(tree);
     }
 }

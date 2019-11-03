@@ -6,6 +6,17 @@ function _ModuleFormatter(
     promise
     , is_array
 ) {
+    /**
+    * A collection of constants
+    * @property
+    */
+    var cnsts = {
+        "export": {
+            "node": "module.exports = "
+            , "browser": "export default "
+        }
+        , "defaultEngine": "browser"
+    };
 
     /**
     * @worker
@@ -27,16 +38,11 @@ function _ModuleFormatter(
             var modFile = assets[0]
             , modData = modFile.data
             , statement
-            , engine = entry.engine || "browser"
-            , exp = entry.export;
+            , engine = entry.config.engine || cnsts.defaultEngine
+            , exp = entry.config.export;
 
-            //add the export
-            if (engine === "browser") {
-                modData = `${modData}\n\nexport default ${exp};`;
-            }
-            else if (engine === "node") {
-                modData = `${modData}\n\nmodule.exports = ${exp};`;
-            }
+            //add the export statement
+            modData = `${modData}\n\n${cnsts.export[engine]}${exp};`;
 
             if(!!entry.module) {
 

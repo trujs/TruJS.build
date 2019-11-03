@@ -21,8 +21,9 @@ function _KitDepTreeUpdater(
         )
         //then add the branch to the dtree
         .then(function thenAddBranch(routeBranch) {
+            var branchName = entry.config.routeBranchName;
             //add the route entry to the dtree
-            entry.dtree[defaults.routeBranchName] = [routeBranch];
+            entry.dtree[branchName] = [routeBranch];
 
             return promise.resolve();
         });
@@ -44,7 +45,8 @@ function _KitDepTreeUpdater(
                 }]
             }
             , handlers = branch.handlers[0]
-            , curRouteBranch = entry.dtree[defaults.routeBranchName];
+            , branchName = entry.config.routeBranchName
+            , curRouteBranch = entry.dtree[branchName];
 
             //if there's already a route branch then apply it first
             if (!!curRouteBranch) {

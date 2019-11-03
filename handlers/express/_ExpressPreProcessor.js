@@ -102,7 +102,7 @@ function _ExpressPreProcessor(
     function createKitAsset(entry) {
         try {
             var project = entry.config.project
-            , namespace = `${project}.${defaults.routeBranchName}`
+            , namespace = `${project}.${entry.config.routeBranchName}`
             , fileName = `${namespace.replace(DOT_PATT, "/")}/${defaults.routeKitName}`
             , file = fs_fileInfo(
                 fileName
