@@ -11,6 +11,10 @@
 *   @dependency {promise} nodeFs ["+require('fs')"]
 *   @dependency {promise} workspacePath ["+process.cwd()"]
 *   @dependency {promise} manifestInit [":TruJS.build.runner._ManifestInit",[]]
+*   @dependency {object} utils_merge [":TruJS.object._Merge"]
+*   @dependency {object} utils_reference [":TruJS.object._Reference"]
+*   @dependency {object} utils_ensure [":TruJS.object._Ensure"]
+*   @dependency {object} is_object [":TruJS.core.is.Object"]
 *   @dependency {object} defaults [":TruJS.build.runner.Defaults"]
 *   @dependency {object} errors [":TruJS.build.runner.Errors"]
 */
@@ -21,6 +25,9 @@ function _BuildInit(
     , workspacePath
     , manifestInit
     , utils_merge
+    , utils_reference
+    , utils_ensure
+    , is_object
     , defaults
     , errors
 ) {
@@ -229,10 +236,24 @@ function _BuildInit(
                 Object.keys(cmdArgs.arguments)
                 .forEach(function forEachKey(key) {
                     if (key !== "config") {
-                        config[key] = utils_merge(
-                            config[key]
-                            , cmdArgs.arguments[key]
+                        var argVal = cmdArgs.arguments[key]
+                        , configRef = getConfigPropertyAtPath(
+                            config
+                            , key
                         );
+
+                        //if the argument value is an object then merge it with the config value
+                        if (is_object(argVal) && is_object(configRef.value)) {
+                            configRef.parent[configRef.index] =
+                                utils_merge(
+                                    configRef.value
+                                    , argVal
+                                );
+                        }
+                        //otherwise set the config at key to the argument value
+                        else {
+                            configRef.parent[configRef.index] = argVal;
+                        }
                     }
                 });
             }
@@ -262,5 +283,19 @@ function _BuildInit(
         catch(ex) {
             return promise.reject(ex);
         }
+    }
+    /**
+    * @function
+    */
+    function getConfigPropertyAtPath(config, key) {
+        //ensure the property exists
+        utils_ensure(key, config);
+        //get a reference for the key in the config
+        var ref = utils_reference(
+            key
+            , config
+        );
+
+        return ref;
     }
 }
