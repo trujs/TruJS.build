@@ -18,13 +18,15 @@
     , "promise": ["+Promise"]
 
     , "utils": [{
-        "copy": [":TruJS.core.Copy"]
-        , "apply": [":TruJS.core.Apply"]
-        , "applyIf": [":TruJS.core.ApplyIf"]
-        , "lookup": [":TruJS.core.Lookup"]
+        "copy": [":TruJS.core.object.Copy"]
+        , "apply": [":TruJS.core.object.Apply"]
+        , "applyIf": [":TruJS.core.object.ApplyIf"]
+        , "lookup": [":TruJS.core.object.Lookup"]
+        , "reference": [":TruJS.core.object.Reference"]
         , "regex": [":TruJS.core._RegEx"]
-        , "merge": [":TruJS.core.Merge"]
-        , "update": [":TruJS.core.Update"]
+        , "merge": [":TruJS.core.object.Merge"]
+        , "update": [":TruJS.core.object.Update"]
+        , "ensure": [":TruJS.core.object.Ensure"]
         , "func": [{
             "inspector": [":TruJS.core.func._Inspector", []]
         }]
