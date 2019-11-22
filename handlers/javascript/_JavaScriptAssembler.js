@@ -59,18 +59,9 @@ function _JavaScriptAssembler(
     function createAssembledAsset(entry, dataArray, resolve, reject) {
         try {
             //concat the namespaces and file data
-            var data, fileName, fileExt, file;
-
-            data = dataArray.join("\n\n");
-            fileName = !!entry.assembler
-                && entry.assembler.fileName
-                || defaults.assembledFileName;
-            fileExt = !!entry.assembler
-                && entry.assembler.fileExt
-                || defaults.assembledfileExt;
-            file = fs_fileInfo(
-                `${fileName}.${fileExt}`
-                , data
+            var file = fs_fileInfo(
+                entry.config.fileName || defaults.appFileName
+                , dataArray.join("\n\n")
             );
 
             resolve ([file]);

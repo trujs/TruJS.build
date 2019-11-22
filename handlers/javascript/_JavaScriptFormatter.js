@@ -14,9 +14,7 @@ function _JavaScriptFormatter(
     ) {
         try {
             var data = assets[0].data
-            , strict = !!entry.javascript
-                ? entry.javascript.strict || true
-                : true;
+            , strict = !!entry.config.strict;
 
             //add strict
             if (strict === true) {

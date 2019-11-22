@@ -6,7 +6,17 @@ function _JavaScriptPreProcessor(
     promise
     , buildHelpers_docExtractor
     , buildHelpers_assetNamer
+    , defaults
 ) {
+    /**
+    * @alias
+    */
+    var docExtractor = buildHelpers_docExtractor
+    /**
+    * @alias
+    */
+    , assetNamer = buildHelpers_assetNamer
+    ;
 
     /**
     * @worker
@@ -47,9 +57,14 @@ function _JavaScriptPreProcessor(
     function processAsset(asset, resolve, reject) {
         try {
             //extract documentation comments
-            buildHelpers_docExtractor(asset);
-            //determine namespace
-            buildHelpers_assetNamer(asset);
+            var assetDocs = buildHelpers_docExtractor(
+                asset
+            )
+            , naming = assetNamer(
+                asset
+            );
+            asset[defaults.docEntryPropertyName] = assetDocs;
+            asset[defaults.namingPropertyName] = naming;
 
             resolve(asset);
         }

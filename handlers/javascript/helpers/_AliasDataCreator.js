@@ -3,7 +3,8 @@
 * @factory
 */
 function _AliasDataCreator(
-    defaults
+    is_string
+    , defaults
 ) {
     /**
     * A regexp pattern for splitting using the dot
@@ -34,7 +35,7 @@ function _AliasDataCreator(
         , parentNamespaces = []
         , parentEntries = [];
 
-        //loop through the assets
+        //loop through the assets and create an alias entry for each
         assets.forEach(function forEachAsset(asset) {
             aliases.push(
                 createAliasEntry(
@@ -103,10 +104,7 @@ function _AliasDataCreator(
             //find the naming alias
             if (doc.hasOwnProperty("naming")) {
                 naming = doc.naming;
-                if (
-                    !!naming
-                    &&  naming.hasOwnProperty("alias")
-                ) {
+                if (!!naming && naming.hasOwnProperty("alias")) {
                     alias = naming.alias.name;
                     return false;
                 }
@@ -136,32 +134,35 @@ function _AliasDataCreator(
     * @function
     */
     function createSnippet(alias, asset) {
-        var val = alias
-        , namespace = !!asset
-            && !!asset.naming
-            && asset.naming.namespace
+        var snippet = alias
+        , data = !!asset && asset.data
+        , namespace
+        , isFactory
         , match;
-
-        if (val.indexOf(".") === -1) {
-            val = `var ${val}`;
+        //if there isn't a dot then this is the root variable name declare it
+        if (snippet.indexOf(".") === -1) {
+            snippet = `var ${snippet}`;
         }
-        if (
-            !!asset
-            && typeof asset.data === "string"
-            && val.indexOf("=") === -1
-        ) {
-            match = asset.data.match(FUNC_PATT);
-            if (!!match) {
-                val = `${val} = ${namespace}(\n    ${match[2].replace(WS_PATT,"").replace(ARG_SEP_PATT,"\n    , ")}\n);`;
+        //if the data is a string then test for a function
+        if (is_string(data)) {
+            namespace = !!asset.naming && asset.naming.namespace;
+            isFactory = !!asset.meta && asset.meta.isFactory || false;
+            if (isFactory) {
+                match = data.match(FUNC_PATT);
+                data = match[2]
+                    .replace(WS_PATT,"")
+                    .replace(ARG_SEP_PATT,"\n    , ");
+                snippet = `${snippet} = ${namespace}(\n    ${data}\n);`;
             }
             else {
-                val = `${val} = ${namespace};`;
+                snippet = `${snippet} = ${namespace};`;
             }
         }
-        if (val.indexOf("=") === -1) {
-            val = `${val} = {};`;
+        //if there isn't an equals then the snippet isn't finished,make it an empty object
+        if (snippet.indexOf("=") === -1) {
+            snippet = `${snippet} = {};`;
         }
 
-        return val;
+        return snippet;
     }
 }
