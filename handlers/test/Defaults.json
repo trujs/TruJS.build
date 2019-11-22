@@ -1,0 +1,12 @@
+{
+    "testEntryType": "test"
+    , "testFileName": "test.json"
+    , "unitUnderTestNameTemplate": "unit${index}"
+    , "testIncludeType": "post-format"
+    , "testIncludeIndex": -1
+    , "config": {
+        "test": {
+            "pathSuffix": ".test.js"
+        }
+    }
+}

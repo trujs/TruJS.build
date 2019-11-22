@@ -1,0 +1,32 @@
+{
+    "defaults": [
+        ":TruJS.build.handlers.test.Defaults"
+        , {"conflictResolution": "error"}
+    ]
+    , "errors": [
+        ":TruJS.build.handlers.test.Errors"
+        , {"conflictResolution": "error"}
+    ]
+    , "buildHandlers": [{
+        "test": [{
+            "initialize": [":TruJS.build.handlers.test._TestInitializer", []]
+            , "collect": [":TruJS.build.handlers.file._FileCollector", []]
+            , "preprocess": [":TruJS.build.handlers.test._TestPreProcessor", []]
+            , "assemble": [":TruJS.build.handlers.test._TestAssembler", []]
+            , "format": [":TruJS.build.handlers.test._TestFormatter", []]
+            , "package": [":TruJS.build.handlers.test._TestPackager", []]
+            , "save": [":TruJS.build.handlers.file._FileSaver", []]
+        }]
+        , "ioc": [{
+            "monolith": [{
+                "initialize": [":TruJS.build.handlers.ioc.monolith._MonolithInitializer", []]
+                , "preprocess": [":TruJS.build.handlers.ioc.monolith._MonolithPreProcessor", []]
+            }]
+        }]
+    }]
+    , "buildHelpers": [{
+        "test": [{
+
+        }]
+    }]
+}

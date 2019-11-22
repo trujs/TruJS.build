@@ -1,9 +1,12 @@
 {
     "name": "trujs-build"
     , "description": [
-        ""
+        "This is the build manifest for the TruJS.build project."
     ]
-    , "strict": true
+    , "config": {
+        "strict": true
+        , "output": "TruJS/builder/"
+    }
     , "repos": [
         {
             "type": "git"
@@ -19,13 +22,19 @@
                 "{TruJS.build.handlers}/builtin-handlers.dtree.json"
                 , "{TruJS.build.handlers.ioc}/build-handler.dtree.json"
                 , "{TruJS.build.handlers.express}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.test}/build-handler.dtree.json"
             ]
             , "config": {
                 "dtreeFileName": "builder-dtree.js"
-                , "appFileName": "builder-node.js"
+                , "fileName": "builder-node.js"
                 , "engine": "node"
-                , "output": "TruJS/builder/"
             }
+        }
+        , {
+            "type": "file"
+            , "paths": [
+                "./builder-cli.js"
+            ]
         }
     ]
 }
