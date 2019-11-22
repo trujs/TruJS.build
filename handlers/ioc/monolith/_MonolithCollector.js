@@ -5,17 +5,12 @@
 function _MonolithCollector(
     promise
     , buildHandlers_file_collect
-    , buildHelpers_ioc_javaScriptMetaExtractor
 ) {
 
     /**
     * @alias
     */
     var fileCollect = buildHandlers_file_collect
-    /**
-    * @alias
-    */
-    , javaScriptMetaExtractor = buildHelpers_ioc_javaScriptMetaExtractor
     ;
 
     /**

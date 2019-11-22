@@ -8,6 +8,7 @@ function _FileCollector(
     , buildHelpers_file_multiPathLoader
     , buildHelpers_file_pathListFilter
     , buildHelpers_file_checkoutRepositories
+    , buildHelpers_javaScriptMetaExtractor
     , buildHelpers_pathParser
     , is_object
     , is_array
@@ -35,6 +36,10 @@ function _FileCollector(
     * @alias
     */
     , pathParser = buildHelpers_pathParser
+    /**
+    * @alias
+    */
+    , javaScriptMetaExtractor = buildHelpers_javaScriptMetaExtractor
     ;
 
     /**
@@ -87,6 +92,10 @@ function _FileCollector(
                 paths
                 , procDetail
             );
+        })
+        //then add the meta data
+        .then(function thenAddMetaData(assets) {
+            return addMetaData(assets);
         });
     };
 
@@ -136,6 +145,32 @@ function _FileCollector(
                     }
                 );
             });
+        }
+    }
+    /**
+    * @function
+    */
+    function addMetaData(assets) {
+        try {
+            assets.forEach(function forEachAsset(asset) {
+                var meta = getAssetMetaData(asset);
+                asset.meta = meta;
+            });
+
+            return promise.resolve(assets);
+        }
+        catch(ex) {
+            return promise.reject(ex);
+        }
+    }
+    /**
+    * @function
+    */
+    function getAssetMetaData(asset) {
+        if (asset.path.ext === ".js") {
+            return javaScriptMetaExtractor(
+                asset
+            );
         }
     }
 }

@@ -3,8 +3,7 @@
 * @factory
 */
 function _RegistryEntryCreator(
-    buildHelpers_ioc_javaScriptMetaExtractor
-    , is_empty
+    is_empty
     , errors
 ) {
     /**
@@ -17,10 +16,6 @@ function _RegistryEntryCreator(
     * @property
     */
     , LD_PATT = /[_]/g
-    /**
-    * @alias
-    */
-    , javaScriptMetaExtractor = buildHelpers_ioc_javaScriptMetaExtractor
     ;
 
     /**
@@ -36,9 +31,7 @@ function _RegistryEntryCreator(
             //remove any leading comments
             value = value.replace(LEADING_COMM_PATT, "");
             //try to get meta info about the asset
-            var meta = javaScriptMetaExtractor(
-                asset
-            );
+            var meta = asset.meta;
             if (meta.isFactory) {
                 deps = getFactoryDependencies(
                     meta

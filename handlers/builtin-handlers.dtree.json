@@ -25,6 +25,7 @@
         , "pathParser": [":TruJS.build.common._PathParser", []]
         , "filePathInfo": [":TruJS.build.common._FilePathInfo", []]
         , "buildPathProcessor": [":TruJS.build.common._BuildPathProcessor", []]
+        , "javaScriptMetaExtractor": [":TruJS.build.common._JavaScriptMetaExtractor", []]
         , "repository": [{
             "git": [":TruJS.build.common.repos._GitRepo",[]]
         }]

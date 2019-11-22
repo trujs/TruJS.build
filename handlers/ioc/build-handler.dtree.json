@@ -28,7 +28,6 @@
             , "dependencyTreeLoader": [":TruJS.build.handlers.ioc.helpers._DependencyTreeLoader", []]
             , "assetPathListGenerator": [":TruJS.build.handlers.ioc.helpers._AssetPathListGenerator", []]
             , "assetPathListGenerator": [":TruJS.build.handlers.ioc.helpers._AssetPathListGenerator", []]
-            , "javaScriptMetaExtractor": [":TruJS.build.common._JavaScriptMetaExtractor", []]
             , "registryEntryCreator": [":TruJS.build.handlers.ioc.helpers._RegistryEntryCreator", []]
         }]
     }]
