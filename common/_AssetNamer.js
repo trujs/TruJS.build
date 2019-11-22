@@ -29,14 +29,14 @@ function _AssetNamer(
     */
     return function AssetNamer(asset) {
         //get the naming attribute from the assets docs and any children
-        var naming = getNamingProperty(asset.docs) || {}
+        var naming = getNamingProperty(asset.docs)
         , nameObj;
         //if we found a naming attribute then convert it to an instance of `{iNaming}`
         if (!!naming) {
             naming = convertNamingProperty(naming);
         }
         //use the path to determine any missing values
-        asset.naming = createNaming(naming, asset.path);
+        return createNaming(naming, asset.path);
     };
 
     /**
@@ -78,6 +78,9 @@ function _AssetNamer(
     * @function
     */
     function createNaming(naming, path) {
+        //ensure we have a naming property
+        naming = naming || {};
+
         //get the path without the workspace directory
         var relativeDir = getRelativePath(path.dir)
         //use the path to create the namespace (minus the name)
