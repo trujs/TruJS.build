@@ -3,14 +3,14 @@
 * @factory
 * @interface iDocEntry
 *   @property {string} description The text before the first @ tag
-*   @property {object} attributes The
+*   @property {any} ...propertyName 0..n properties contained within the document entry.
 * @interface iDocTag
 *   @property {number} indent
+*   @property {number} offset
 *   @property {string} tag
 *   @property {string} type
 *   @property {string} name
 *   @property {string} description
-*   @property
 */
 function _DocExtractor(
     is
@@ -36,12 +36,17 @@ function _DocExtractor(
     * A regexp pattern for splitting an @ tag
     * @property
     */
-    , AT_TAG_PARTS_PATT = /([^@]*)@([A-z_-]+)(?:\s+\{([A-z]+)\})?(?:\s+((?:\[[^\]]+\])|(?:\{[^\}]+\})|(?:[^\s]+)))?(\s+.+)?$/ms
+    , AT_TAG_PARTS_PATT = /([^@]*)@([A-z_-]+)(?:\s+\{([A-z]+)\}(?:\s+((?:\[[^\]]+\])|(?:\{[^\}]+\})|(?:[^\s]+)))?)?(?:\s+(.+))?$/ms
     /**
     * A regexp pattern for splitting an @ tag
     * @property
     */
     , DESC_CLEAN_PATT = /^(?:[ \*\-]*)?(.*?)(?:[ \*\-]*)$/
+    /**
+    * A regexp pattern for checking a value to see if it fit the name pattern
+    * @property
+    */
+    , ALPHA_NUM_PATT = /^[A-z0-9_.]+$/
     ;
 
     /**
@@ -51,8 +56,10 @@ function _DocExtractor(
         if (
             defaults.jsDocExt.indexOf(asset.path.ext) !== -1
         ) {
-            extractFromJs(asset);
+            return extractFromJs(asset);
         }
+
+        return [];
     };
 
     /**
@@ -60,37 +67,33 @@ function _DocExtractor(
     * @function
     */
     function extractFromJs(asset) {
-        var entries = []
+        var docEntries = []
         , dataNoDoc = is.string(asset.data)
             && asset.data.replace(
                 JS_DOC_PATT
-                , function replaceDoc(match, contents) {
-                    entries.push(contents);
+                , function replaceDoc(match, contents, offset) {
+                    //convert the jsdoc entry into an object
+                    var doc = convertDocEntry(
+                        contents
+                    );
+                    //add the offset and length
+                    doc.offsetStart = offset;
+                    doc.documentEnd = offset + match.length;
+                    //add the offset to the previous entry
+                    if (docEntries.length > 0) {
+                        docEntries[docEntries.length - 1].offsetEnd = offset;
+                    }
+                    //add the doc object to the list
+                    docEntries.push(doc);
+                    //return an empty string to replace the document entry
                     return "";
                 }
             )
-        //convert the
-        , docEntries = convertDocEntries(
-            entries
-        )
         ;
 
-        addToAsset(
-            asset
-            , docEntries
-        );
-    }
-    /**
-    * @function
-    */
-    function convertDocEntries(entries) {
-        var docEntries = [];
-
-        entries.forEach(function forEachEntry(entry) {
-            docEntries.push(
-                convertDocEntry(entry)
-            );
-        });
+        if (docEntries.length > 0) {
+            docEntries[docEntries.length - 1].offsetEnd = asset.data.length ;
+        }
 
         return docEntries;
     }
@@ -158,6 +161,7 @@ function _DocExtractor(
             tagObj = {
                 "indent": !!parts[1] && parts[1].length || 0
                 , "tag": parts[2]
+                , "raw": parts[0]
             };
 
             !!parts[3] && (tagObj.type = parts[3]);
@@ -180,7 +184,16 @@ function _DocExtractor(
                     .join("\n");
             }
             //set the last tag for the next loop
-            lastTag = tagObj
+            lastTag = tagObj;
+
+            //if there isn't a name and the desc is a single series of alpha numeric characters, then that is the name
+            if (
+                !tagObj.name && !!tagObj.desc
+                && tagObj.desc.match(ALPHA_NUM_PATT)
+            ) {
+                tagObj.name = tagObj.desc;
+                delete tagObj.desc;
+            }
 
             return tagObj;
         });
@@ -228,12 +241,5 @@ function _DocExtractor(
         });
 
         return tagTree;
-    }
-    /**
-    * @function
-    */
-    function addToAsset(asset, docEntries) {
-        asset[defaults.docEntryPropertyName] =
-            docEntries;
     }
 }
