@@ -23,7 +23,7 @@ function _MonolithAssembler(
         .join("\n\n")
         //create a new file info object
         , fileInfo = fs_fileInfo(
-            entry.config.appFileName
+            entry.config.fileName || defaults.appFileName
             , assembled
         );
 

@@ -10,7 +10,7 @@ function _FileSaver(
     , is_nill
     , defaults
 ) {
-
+    
     /**
     * @worker
     *   @async
@@ -113,7 +113,7 @@ function _FileSaver(
         if (!nodePath.extname(outputPath)) {
             outputPath = nodePath.join(
                 outputPath
-                , config.appFileName
+                , config.fileName
             );
         }
 
