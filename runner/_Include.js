@@ -66,7 +66,7 @@ function _Include(
             return entryAssets;
         }
 
-        if (!Array.isArray(includeAr)) {
+        if (!is_array(includeAr)) {
             includeAr = [includeAr];
         }
         ///LOGGING
@@ -82,8 +82,25 @@ function _Include(
         ///END LOGGING
         //loop through the include array
         includeAr.forEach(function forEachValue(include) {
-            var includeAssets = utils_copy(assets[include]);
-            if (Array.isArray(includeAssets)) {
+            var includeIndex = include;
+            //if the include is negative then minus it from the entry index
+            if (includeIndex < 0) {
+                includeIndex = entryIndex + includeIndex;
+            }
+            //create a copy of the included index's entry assets to remove references
+            var includeAssets = utils_copy(assets[includeIndex]);
+            if (is_array(includeAssets)) {
+                //mark the included assets
+                includeAssets
+                .forEach(function forEachIncludedAsset(asset,indx) {
+                    asset.included = {
+                        "includeName": propertyName
+                        , "originalIndex": include
+                        , "resolvedIndex": includeIndex
+                        , "assetIndex": indx
+                    };
+                });
+                //combine the entry's and the included assets
                 entryAssets = entryAssets.concat(includeAssets);
             }
         });
