@@ -1,5 +1,4 @@
-{
-    "fileExtEncodingMap": {
+{    "fileExtEncodingMap": {
         "$default": "utf8"
         , "jpg": "binary"
         , "png": "binary"
@@ -8,7 +7,9 @@
     , "sourceDirectory": "source"
     , "pathsPropertyName": "paths"
     , "docEntryPropertyName": "docs"
+    , "namingPropertyName": "naming"
     , "dtreeName": "dtree.json"
+    , "appFileName": "app.js"
     , "jsDocExt": [
         ".js"
     ]
@@ -29,10 +30,8 @@
             , "body"
         ]
         , "buildsDirectory": "build"
-        , "appFileName": "app.js"
         , "excludePaths": [
             "*manifest.json"
             , "*dtree.json"
         ]
-    }
-}
+    }}
