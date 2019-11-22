@@ -39,6 +39,7 @@
         , "object": [":TruJS.core.is.Object"]
         , "regexp": [":TruJS.core.is.RegExp"]
         , "empty": [":TruJS.core.is.Empty"]
+        , "numeric": [":TruJS.core.is.Numeric"]
     }]
     , "fs": [{
         "filePathInfo": [":TruJS.core.fs._FilePathInfo", []]
