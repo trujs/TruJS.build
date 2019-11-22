@@ -7,23 +7,23 @@
 *   @value concurrent The step handler will be executed for the
 * @factory
 *   @dependency {promise} promise ["+Promise"]
-*   @dependency {object} reporter [".reporter"]
 *   @dependency {object} buildHandlers [".buildHandlers"]
-*   @dependency {function} utils_copy [":TruJS.Copy"]
-*   @dependency {function} utils_lookup [":TruJS.Copy"]
+*   @dependency {function} utils_copy [":TruJS.object.Copy"]
+*   @dependency {function} utils_lookup [":TruJS.object.Lookup"]
+*   @dependency {object} reporter [".reporter"]
+*   @dependency {function} processDetails [":TruJS.log._ProcessDetails"]
 *   @dependency {object} defaults [":TruJS.build.runner.Defaults"]
 *   @dependency {object} errors [":TruJS.build.runner.Errors"]
-*   @dependency {function} processDetails [":TruJS.log._ProcessDetails"]
 */
 function _BuildStep(
     promise
-    , reporter
     , buildHandlers
     , utils_copy
     , utils_lookup
+    , reporter
+    , processDetails
     , defaults
     , errors
-    , processDetails
 ) {
 
     /**

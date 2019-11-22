@@ -1,16 +1,22 @@
 /**
-* This asyncronous utility
+* Processes the `include` properties for each manifest entry, after each build step, to include the resulting assets from other workflows. The include represent a pause of all the workflows after each step in the build process so that resulting assets from one workflow can be added to another without race conditions.
 * @factory
+*   @singleton
 *   @dependency {promise} promise ["+Promise"]
+*   @dependency {function} is_nill [":TruJS.core.is.Nill"]
+*   @dependency {function} utils_copy [":TruJS.core.object.Copy"]
+*   @dependency {object} reporter [":TruJS.core.log._Reporter"]
+*   @dependency {function} processDetails [":TruJS.core.log._ProcessDetails"]
 *   @dependency {object} defaults [":TruJS.build.runner.Defaults"]
 */
 function _Include(
     promise
     , is_nill
+    , is_array
     , utils_copy
-    , defaults
-    , processDetails
     , reporter
+    , processDetails
+    , defaults
 ) {
 
     /**

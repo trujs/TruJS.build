@@ -4,12 +4,11 @@
 * @interface iBuildOperation
 *   @property {object} manifest The loaded manifest
 *   @property {object} config The loaded config and/or the command line arguments and a property with the command line flags
-*
 * @factory
 *   @dependency {promise} promise ["+Promise"]
-*   @dependency {promise} nodePath ["+require('path')"]
-*   @dependency {promise} nodeFs ["+require('fs')"]
-*   @dependency {promise} workspacePath ["+process.cwd()"]
+*   @dependency {object} nodePath ["+require('path')"]
+*   @dependency {object} nodeFs ["+require('fs')"]
+*   @dependency {string} workspacePath ["+process.cwd()"]
 *   @dependency {promise} manifestInit [":TruJS.build.runner._ManifestInit",[]]
 *   @dependency {object} utils_merge [":TruJS.object._Merge"]
 *   @dependency {object} utils_reference [":TruJS.object._Reference"]

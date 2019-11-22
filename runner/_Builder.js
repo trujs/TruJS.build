@@ -11,21 +11,23 @@
 *
 * @factory
 *   @dependency {promise} promise ["+Promise"]
-*   @dependency {object} defaults [":TruJS.build.runner.Defaults"]
 *   @dependency {promise} include [":TruJS.build.runner._Inlcude"]
 *   @dependency {promise} buildStep [":TruJS.build.runner._BuildStep"]
-*   @dependency {function} utils_copy [":TruJS.Copy"]
-*   @dependency {function} utils_merge [":TruJS.Merge"]
+*   @dependency {function} utils_copy [":TruJS.object.Copy"]
+*   @dependency {function} utils_merge [":TruJS.object.Merge"]
+*   @dependency {object} reporter [":TruJS.core.log._Reporter"]
+*   @dependency {function} processDetails [":TruJS.core.log._ProcessDetails"]
+*   @dependency {object} defaults [":TruJS.build.runner.Defaults"]
 */
 function _Builder(
     promise
-    , reporter
-    , defaults
     , include
     , buildStep
-    , processDetails
     , utils_copy
     , utils_merge
+    , reporter
+    , processDetails
+    , defaults
 ) {
 
     /**
