@@ -1,5 +1,5 @@
 {
-    "missing_files_property": "[Missing Files Property] Manifest entries of this build type require a 'files' property."
+    "missing_paths_property": "[Missing Paths Property] Manifest entries of this build type require a 'paths' property."
     , "invalid_path_fragment": "[Invalid Path Fragment] The path fragment value must be a string that follows the path-fragment notation."
     , "invalid_root": "[Invalid Root] The path's root is invalid; the path must be absolute."
     , "invalid_path_list": "[Invalid Path List] The path list must be an array of iPathInfo."

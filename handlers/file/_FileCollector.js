@@ -110,7 +110,7 @@ function _FileCollector(
             if (!is_object(entry.include)) {
                 return promise.reject(
                     new Error(
-                        `${errors.missing_files_property} (${entry.type})`
+                        `${errors.missing_paths_property} (${entry.type})`
                     )
                 );
             }
