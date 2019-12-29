@@ -4,6 +4,7 @@
 */
 function _ModuleFormatter(
     promise
+    , fs_fileInfo
     , buildHandlers_javascript_format
     , is_array
 ) {
@@ -54,7 +55,9 @@ function _ModuleFormatter(
             , statement
             , engine = entry.config.engine || cnsts.defaultEngine
             , exp = entry.config.export
-            , exportCmd = `${cnsts.export[engine]}${exp};`;
+            , exportCmd = `${cnsts.export[engine]}${exp};`
+            //use the filename from the manifest entry
+            , fileName = entry.config.fileName;
 
             //add the export statement
             modData = `${modData}\n\n${exportCmd}`;
@@ -79,7 +82,10 @@ function _ModuleFormatter(
                 }
             }
 
-            modFile.data = modData;
+            modFile = fs_fileInfo(
+                fileName
+                , modData
+            );
 
             resolve([modFile]);
         }
