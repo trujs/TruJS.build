@@ -12,6 +12,7 @@ function _ManifestInit(
     utils_copy
     , utils_merge
     , utils_reference
+    , is_object
     , defaults
     , errors
 ) {
@@ -45,15 +46,15 @@ function _ManifestInit(
 
         //loop through the entries and merge each with the defaults
         return entries.map(function mapEntry(entry, index) {
-            var entry = utils_merge(
-                utils_copy(manifestDefaults)// don't share references
-                , entry
+            var mergedEntry = utils_merge(
+                entry
+                , utils_copy(manifestDefaults) // don't share references
             );
 
             //update entry properties
-            updateProperties(entry, entry);
+            updateProperties(mergedEntry, mergedEntry);
 
-            return entry;
+            return mergedEntry;
         });
     };
 
@@ -64,11 +65,11 @@ function _ManifestInit(
         Object.keys(obj)
         .forEach(function forEachKey(key) {
             var val = obj[key];
-            if (typeof val === "object") {
+            if (is_object(val)) {
                 updateProperties(entry, val);
             }
             else if (typeof val === "string") {
-                obj[key] = 
+                obj[key] =
                     val.replace(VAR_PATT, function updateVar(match, name) {
                         var ref = utils_reference(name, entry);
                         if (ref.found) {
