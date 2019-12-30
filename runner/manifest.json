@@ -19,7 +19,9 @@
         {
             "type": "ioc.monolith"
             , "base": [
-                "{TruJS.build.handlers}/builtin-handlers.dtree.json"
+                "{TruJS.build.handlers.file}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.javascript}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.module}/build-handler.dtree.json"
                 , "{TruJS.build.handlers.ioc}/build-handler.dtree.json"
                 , "{TruJS.build.handlers.express}/build-handler.dtree.json"
                 , "{TruJS.build.handlers.test}/build-handler.dtree.json"

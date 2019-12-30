@@ -11,13 +11,6 @@
             , "format": [":TruJS.build.handlers.javascript._JavaScriptFormatter",[]]
             , "save": [":TruJS.build.handlers.file._FileSaver", []]
         }]
-        , "module": [{
-            "collect": [":TruJS.build.handlers.file._FileCollector", []]
-            , "preprocess": [":TruJS.build.handlers.javascript._JavaScriptPreProcessor", []]
-            , "assemble": [":TruJS.build.handlers.javascript._JavaScriptAssembler", []]
-            , "format": [":TruJS.build.handlers.module._ModuleFormatter",[]]
-            , "save": [":TruJS.build.handlers.file._FileSaver", []]
-        }]
     }]
     , "buildHelpers": [{
         "docExtractor": [":TruJS.build.common._DocExtractor",[]]

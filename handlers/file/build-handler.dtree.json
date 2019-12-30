@@ -1,0 +1,25 @@
+{
+    "buildHandlers": [{
+        "file": [{
+            "collect": [":TruJS.build.handlers.file._FileCollector", []]
+            , "save": [":TruJS.build.handlers.file._FileSaver", []]
+        }]
+    }]
+    , "buildHelpers": [{
+        "docExtractor": [":TruJS.build.common._DocExtractor",[]]
+        , "assetNamer":  [":TruJS.build.common._AssetNamer",[]]
+        , "pathParser": [":TruJS.build.common._PathParser", []]
+        , "filePathInfo": [":TruJS.build.common._FilePathInfo", []]
+        , "buildPathProcessor": [":TruJS.build.common._BuildPathProcessor", []]
+        , "javaScriptMetaExtractor": [":TruJS.build.common._JavaScriptMetaExtractor", []]
+        , "repository": [{
+            "git": [":TruJS.build.common.repos._GitRepo",[]]
+        }]
+        , "file": [{
+            "filePathProcessor": [":TruJS.build.handlers.file.helpers._FilePathProcessor",[]]
+            , "multiPathLoader": [":TruJS.build.handlers.file.helpers._MultiPathLoader",[]]
+            , "pathListFilter": [":TruJS.build.handlers.file.helpers._PathListFilter",[]]
+            , "checkoutRepositories": [":TruJS.build.handlers.file.helpers._CheckoutRepositories",[]]
+        }]
+    }]
+}
