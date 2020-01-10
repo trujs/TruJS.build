@@ -102,6 +102,7 @@ function _DocExtractor(
     * @function
     */
     function convertDocEntry(entry) {
+        //an array for storing the @ tags
         var atTags = []
         //remove the @ tags from the entry, the remaining is description
         , desc = stripAtTags(entry, atTags)
@@ -195,6 +196,12 @@ function _DocExtractor(
                 delete tagObj.desc;
             }
 
+            //if the tag name is in square brackets then it's optional
+            if (!!tagObj.name && tagObj.name.indexOf("[") === 0) {
+                tagObj.name = tagObj.name.substring(1, tagObj.name.length - 1);
+                tagObj.optional = true;
+            }
+
             return tagObj;
         });
     }
@@ -231,7 +238,9 @@ function _DocExtractor(
             //see if this tag has been used before
             if (curTag.hasOwnProperty(tagObj.tag)) {
                 if (!is.array(curTag[tagObj.tag])) {
-                    curTag[tagObj.tag] = [];
+                    curTag[tagObj.tag] = [
+                        curTag[tagObj.tag]
+                    ];
                 }
                 curTag[tagObj.tag].push(tagObj);
             }
