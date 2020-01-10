@@ -7,6 +7,10 @@
         ":TruJS.build.handlers.ioc.Errors"
         , {"conflictResolution": "error"}
     ]
+    , "bootstrapTemplates": [
+        ":TruJS.build.handlers.ioc.BootstrapTemplates"
+        , {"conflictResolution": "error"}
+    ]
     , "buildHandlers": [{
         "ioc": [{
             "monolith": [{

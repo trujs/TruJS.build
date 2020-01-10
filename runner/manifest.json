@@ -11,7 +11,7 @@
         {
             "type": "git"
             , "url": "https://github.com/trujs/TruJS.core.git"
-            , "branch": "master"
+            , "branch": "development"
             , "local": "TruJS/core"
         }
     ]
@@ -25,6 +25,7 @@
                 , "{TruJS.build.handlers.ioc}/build-handler.dtree.json"
                 , "{TruJS.build.handlers.express}/build-handler.dtree.json"
                 , "{TruJS.build.handlers.test}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.bootstrap}/build-handler.dtree.json"
             ]
             , "config": {
                 "dtreeFileName": "builder-dtree.js"

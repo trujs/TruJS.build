@@ -1,0 +1,40 @@
+{
+    "defaults": [
+        ":TruJS.build.handlers.bootstrap.Defaults"
+        , {"conflictResolution": "error"}
+    ]
+    , "errors": [
+        ":TruJS.build.handlers.bootstrap.Errors"
+        , {"conflictResolution": "error"}
+    ]
+    , "utils": [{
+        "lookup": [":TruJS.core.object.Lookup"]
+    }]
+    , "buildHandlers": [{
+        "bootstrap": [{
+            "initialize": [":TruJS.build.handlers.bootstrap._BootstrapInitializer", []]
+            , "collect": [":TruJS.build.handlers.file._FileCollector", []]
+            , "preprocess": [":TruJS.build.handlers.javascript._JavaScriptPreProcessor", []]
+            , "assemble": [":TruJS.build.handlers.bootstrap._BootstrapAssembler", []]
+            , "format": [":TruJS.build.handlers.bootstrap._BootstrapFormatter", []]
+            , "save": [":TruJS.build.handlers.file._FileSaver", []]
+        }]
+    }]
+    , "buildHelpers": [{
+        "docExtractor": [":TruJS.build.common._DocExtractor",[]]
+        , "assetNamer":  [":TruJS.build.common._AssetNamer",[]]
+        , "pathParser": [":TruJS.build.common._PathParser", []]
+        , "filePathInfo": [":TruJS.build.common._FilePathInfo", []]
+        , "buildPathProcessor": [":TruJS.build.common._BuildPathProcessor", []]
+        , "javaScriptMetaExtractor": [":TruJS.build.common._JavaScriptMetaExtractor", []]
+        , "repository": [{
+            "git": [":TruJS.build.common.repos._GitRepo",[]]
+        }]
+        , "file": [{
+            "filePathProcessor": [":TruJS.build.handlers.file.helpers._FilePathProcessor",[]]
+            , "multiPathLoader": [":TruJS.build.handlers.file.helpers._MultiPathLoader",[]]
+            , "pathListFilter": [":TruJS.build.handlers.file.helpers._PathListFilter",[]]
+            , "checkoutRepositories": [":TruJS.build.handlers.file.helpers._CheckoutRepositories",[]]
+        }]
+    }]
+}
