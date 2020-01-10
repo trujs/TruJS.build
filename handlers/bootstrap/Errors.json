@@ -1,0 +1,4 @@
+{
+    "missing_bootstrap_snippets": "[Missing Bootstrap Snippets] The bootstrapTemplates dependency is missing a snippet array for this bootstrapType."
+    , "invalid_bootstrap_type": "[Invalid Bootstrap Type] Invalid or missing boostrapType property in the bootstrap manifest entry."
+}
