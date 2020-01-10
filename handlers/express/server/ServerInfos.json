@@ -1,0 +1,13 @@
+{
+    "initializing_server": "Initializing Web Server"
+    , "starting_server": "Starting Web Server"
+    , "application_listening": "Application '%s' listening %s on port '%s'"
+    , "server_closing": "Server '%s' is closing"
+    , "server_closed": "Server '%s' has been closed"
+    , "creating_app": "Creating application '%s'"
+    , "adding_router": "Adding router handler '%s' entry for method '%s' and path '%s'"
+    , "adding_middleware": "Adding middleware handler '%s' for path '%s'"
+    , "adding_json_parsing": "Adding the built-in json handler to the app"
+    , "adding_compression": "Adding compression as the last middleware"
+    , "adding_param": "Adding param '%s' entry to %s for parameter '%s'"
+}

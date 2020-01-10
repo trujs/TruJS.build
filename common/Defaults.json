@@ -1,0 +1,37 @@
+{    "fileExtEncodingMap": {
+        "$default": "utf8"
+        , "jpg": "binary"
+        , "png": "binary"
+        , "gif": "binary"
+    }
+    , "sourceDirectory": "source"
+    , "pathsPropertyName": "paths"
+    , "docEntryPropertyName": "docs"
+    , "namingPropertyName": "naming"
+    , "dtreeName": "dtree.json"
+    , "appFileName": "app.js"
+    , "jsDocExt": [
+        ".js"
+    ]
+    , "extSuffixExceptions": [
+        ".js"
+        , ".json"
+    ]
+    , "config": {
+        "hideGlobals": [
+            "require"
+            , "process"
+            , "global"
+            , "module"
+            , "exports"
+            , "eval"
+            , "window"
+            , "document"
+            , "body"
+        ]
+        , "buildsDirectory": "build"
+        , "excludePaths": [
+            "*manifest.json"
+            , "*dtree.json"
+        ]
+    }}

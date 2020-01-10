@@ -1,0 +1,4 @@
+{
+    "server_running": "[Server Running] The server '%s' is already running."
+    , "failed_close_server": "[Failed Close Server] Failed to close the server '%s'."
+}

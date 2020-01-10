@@ -1,0 +1,7 @@
+{
+    "duplicate_route_label": "[Duplicate Route Label] The route entry has a label that has already been added."
+    , "route_missing_name": "[Route Missing Name] The route entry is missing the name property."
+    , "invalid_route_type": "[Invalid Route Type] The route type must be one of three values; router, middleware or app."
+    , "missing_router_middleware": "[Missing Router or Middleware] An app entry has a param, router or middleware dependency that doesn't exist."
+    , "missing_required_dependency": "[Missing Required Dependency] A required param, middleware, or router is missing, verify the dependency exists or remove the dependency from the meta data."
+}

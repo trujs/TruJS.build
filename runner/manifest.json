@@ -1,0 +1,43 @@
+{
+    "name": "trujs-build"
+    , "description": [
+        "This is the build manifest for the TruJS.build project."
+    ]
+    , "config": {
+        "strict": true
+        , "output": "TruJS/builder/"
+    }
+    , "repos": [
+        {
+            "type": "git"
+            , "url": "https://github.com/trujs/TruJS.core.git"
+            , "branch": "development"
+            , "local": "TruJS/core"
+        }
+    ]
+    , "entries": [
+        {
+            "type": "ioc.monolith"
+            , "base": [
+                "{TruJS.build.handlers.file}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.javascript}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.module}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.ioc}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.express}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.test}/build-handler.dtree.json"
+                , "{TruJS.build.handlers.bootstrap}/build-handler.dtree.json"
+            ]
+            , "config": {
+                "dtreeFileName": "builder-dtree.js"
+                , "fileName": "builder-node.js"
+                , "engine": "node"
+            }
+        }
+        , {
+            "type": "file"
+            , "paths": [
+                "./builder-cli.js"
+            ]
+        }
+    ]
+}

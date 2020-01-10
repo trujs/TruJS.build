@@ -1,0 +1,5 @@
+{
+    "missing_manifest_path": "[Missing Manifest Path] The manifest path could not be determined."
+    , "invalid_manifest": "[Invalid Manifest] The manifest entries property must be an array."
+    , "invalid_build_type": "[Invalid Build Type] The build type could not be located in the buildTypes collection."
+}
