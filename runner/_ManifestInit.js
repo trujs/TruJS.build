@@ -2,7 +2,10 @@
 * The ManifestInit utility uses the raw manifest object to generate an array of `{iManifestEntry}` instances. The `entries` property is the base for the array, each member is initialized and the default properties are applied to the entry object. The root properties in the manifest, other than the entries property, are add to each manifest entry; as a copy so no references exist between manifest entries.
 * @factory
 *   @dependency {function} utils_copy [":TruJS.core.object.Copy"]
-*   @dependency {function} utils_apply [":TruJS.core.object.Apply"]
+*   @dependency {function} utils_merge [":TruJS.core.object.Merge"]
+*   @dependency {function} utils_reference [":TruJS.core.object.Reference"]
+*   @dependency {function} is_object [":TruJS.core.is.Object"]
+*   @dependency {function} is_array [":TruJS.core.is.Array"]
 *   @dependency {object} defaults [":TruJS.build.runner.Defaults"]
 *   @dependency {object} errors [":TruJS.build.runner.Errors"]
 * @interface iManifestEntry
@@ -13,6 +16,7 @@ function _ManifestInit(
     , utils_merge
     , utils_reference
     , is_object
+    , is_array
     , defaults
     , errors
 ) {
@@ -65,18 +69,23 @@ function _ManifestInit(
         Object.keys(obj)
         .forEach(function forEachKey(key) {
             var val = obj[key];
-            if (is_object(val)) {
+            if (is_object(val) || is_array(val)) {
                 updateProperties(entry, val);
             }
             else if (typeof val === "string") {
-                obj[key] =
-                    val.replace(VAR_PATT, function updateVar(match, name) {
-                        var ref = utils_reference(name, entry);
-                        if (ref.found) {
-                            return ref.value;
-                        }
-                        return "";
-                    });
+                while(VAR_PATT.test(obj[key])) {
+                    obj[key] =
+                        obj[key].replace(
+                            VAR_PATT
+                            , function updateVar(match, name) {
+                                var ref = utils_reference(name, entry);
+                                if (ref.found) {
+                                    return ref.value;
+                                }
+                                return "";
+                            }
+                        );
+                }
             }
         });
     }
