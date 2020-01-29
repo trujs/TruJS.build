@@ -1,17 +1,17 @@
 ## Build Type: trujs.file
 
-The `trujs.file` build type is a simple file collector. It uses values in the `files` property to determine the list of file paths, and then loads them.
+The `trujs.file` build type is a simple file collector. It uses values in the `paths` property to determine the list of file paths, and then loads them.
 
 This build type can be used to collect files in one workflow and then share them with the other workflows, using includes, or the `file.collect` factory can be used as the base for other build types.
 
 | Property Name | Type | Description |
 | - | - | - |
-|files | string array | An array of strings, each of which <br>represents a file path or path fragment
+|paths | string array | An array of strings, each of which <br>represents a file path or path fragment
 |repos | object array | An array of objects, instances of `{iRepoMeta}`,<br> which will be used to prep the reposositories<br>for the file collection process.
 
-###### FILES PROPERTY
+###### PATHS PROPERTY
 
-The collector uses the `files` property to determine which files to load. The property is an array of 1..n string. Each string is either a file path or a path fragment.
+The collector uses the `paths` property to determine which files to load. The property is an array of 1..n string. Each string is either a file path or a path fragment.
 
 Example:
 ```json
@@ -19,9 +19,9 @@ Example:
     "files": [
         "[r]./*.doc.*"
         , "[r,-]./*.json"
-        , "-{project}/project.namespace/*"
-        , "{source}/TruJS/build/runner/*.js"
-        , "./[views|components]/*.[html|css|scss]"
+        , "-{TruJS.build.runner}/*.json"
+        , "./TruJS/build/runner/*.js"
+        , "./<views|components>/*.<html|css|scss>"
     ]
 }
 ```
@@ -33,10 +33,9 @@ Example:
 |sep | := "/" / "\\"
 |modifier | := ("[" `mod` 0*("," `mod`) "]") / `mod`
 |mod | := "r" / "-"
-|root | := `cwd` / `source-tag` / `project-tag`
+|root | := `cwd` / `project-tag`
 |cwd | := "."
-|source-tag | := "{source}"
-|project-tag | := "{project}"
+|project-tag | := "{project.namespace}"
 |path | := 1*(sep path-seg)
 |path-seg | :=
 |file-name | := name ext
