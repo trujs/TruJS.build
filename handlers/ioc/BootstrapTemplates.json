@@ -7,8 +7,13 @@
                 , "{TruJS.build.handlers.ioc.snippets}/exportApplication-${config.engine}.snippet.js"
                 , "{TruJS.build.handlers.ioc.snippets}/initializeApplication-${config.engine}.snippet.js"
                 , "{TruJS.build.handlers.ioc.snippets}/createApp.snippet.js"
-                , "{TruJS.build.handlers.ioc.snippets}/setupApp-${iocType}.snippet.js"
+                , "{TruJS.build.handlers.ioc.snippets}/setupApp-${iocType}-${config.engine}.snippet.js"
                 , "{TruJS.build.common.snippets}/printMessage.snippet.js"
+            ]
+        }
+        , "browser": {
+            "snippets": [
+                "{TruJS.build.handlers.ioc.snippets}/applicationIndex.snippet.html"
             ]
         }
     }
