@@ -9,7 +9,6 @@
 */
 function _MultiPathLoader(
     promise
-    , nodePath
     , fs_fileLoader
     , reporter
     , defaults

@@ -6,8 +6,8 @@
 *   @property {object} config The loaded config and/or the command line arguments and a property with the command line flags
 * @factory
 *   @dependency {promise} promise ["+Promise"]
-*   @dependency {object} nodePath ["+require('path')"]
-*   @dependency {object} nodeFs ["+require('fs')"]
+*   @dependency {object} node_path ["+require('path')"]
+*   @dependency {object} node_fs ["+require('fs')"]
 *   @dependency {string} workspacePath ["+process.cwd()"]
 *   @dependency {promise} manifestInit [":TruJS.build.runner._ManifestInit",[]]
 *   @dependency {object} utils_merge [":TruJS.object._Merge"]
@@ -19,8 +19,8 @@
 */
 function _BuildInit(
     promise
-    , nodePath
-    , nodeFs
+    , node_path
+    , node_fs
     , workspacePath
     , manifestInit
     , utils_merge
@@ -154,8 +154,8 @@ function _BuildInit(
         }
 
         //add the project path if this is just a file name
-        if (nodePath.dirname(path) === ".") {
-            path = nodePath.join(
+        if (node_path.dirname(path) === ".") {
+            path = node_path.join(
                 getPath(null, cmdArgs, true)
                 , path
             );
@@ -163,15 +163,15 @@ function _BuildInit(
 
         //add the project path if the path starts with .
         if (path[0] === "." && path[1] !== ".") {
-            path = nodePath.join(
+            path = node_path.join(
                 getPath(null, cmdArgs, true)
                 , path
             );
         }
 
         //add the workspace directory for relative paths
-        if (!nodePath.isAbsolute(path)) {
-            path = nodePath.join(
+        if (!node_path.isAbsolute(path)) {
+            path = node_path.join(
                 workspacePath
                 , defaults.sourceDirectory
                 , path
@@ -180,10 +180,10 @@ function _BuildInit(
 
         //add the default file name if missing
         if (
-            nodePath.extname(path) === ""
+            node_path.extname(path) === ""
             && !!name
         ) {
-            path = nodePath.join(
+            path = node_path.join(
                 path
                 , defaults[`${name}FileName`]
             );
@@ -199,7 +199,7 @@ function _BuildInit(
         //start a promise
         return new promise(function thenReadFile(resolve, reject) {
             //start the read process
-            nodeFs.readFile(
+            node_fs.readFile(
                 path
                 , 'utf8'
                 , function readFileCb(err, data) {

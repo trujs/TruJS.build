@@ -5,7 +5,7 @@
 function _ServerInit(
     promise
     , $route$_nodeExpress
-    , $route$_nodePath
+    , $route$_node_path
     , $route$_nodeDirName
     , $route$_handlers_apps
     , $route$_handlers_routers
@@ -29,7 +29,7 @@ function _ServerInit(
     /**
     * @alias
     */
-    , nodePath = $route$_nodePath
+    , node_path = $route$_node_path
     /**
     * @alias
     */
@@ -297,7 +297,7 @@ function _ServerInit(
         , statics = appMeta.statics;
 
         statics.forEach(function forEachPath(path) {
-            var fullPath = nodePath.join(
+            var fullPath = node_path.join(
                 nodeDirName,
                 path
             )

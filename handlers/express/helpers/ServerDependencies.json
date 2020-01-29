@@ -4,7 +4,12 @@
         "nodeHttp": ["+require('http')"]
         , "nodeHttps": ["+require('https')"]
         , "nodeExpress": ["+require('express')"]
-        , "nodePath": ["+require('path')"]
+        , "node":[{
+            "path": ["+require('path')"]
+            , "http": ["+require('http')"]
+            , "https": ["+require('https')"]
+            , "express": ["+require('express')"]
+        }]
         , "nodeDirName": ["+__dirname"]
         , "nodeCompression": ["+require('compression')"]
         , "runServer": [":TruJS.build.handlers.express.server._RunServer",[]]

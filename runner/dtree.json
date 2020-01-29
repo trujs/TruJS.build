@@ -13,10 +13,11 @@
     , "idGenerator": [":TruJS.core.data._IdGenerator",[]]
     , "processDetails": [":TruJS.core.log._ProcessDetails",[]]
     , "workspacePath": ["+process.cwd()"]
-    , "nodePath": ["+require('path')"]
-    , "nodeFs": ["+require('fs')"]
+    , "node":[{
+        "path": ["+require('path')"]
+        , "fs":  ["+require('fs')"]
+    }]
     , "promise": ["+Promise"]
-
     , "utils": [{
         "copy": [":TruJS.core.object.Copy"]
         , "apply": [":TruJS.core.object.Apply"]

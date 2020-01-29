@@ -6,7 +6,7 @@ function _PathListFilter(
     promise
     , is
     , utils_regex
-    , nodePath
+    , node_path
     , defaults
     , errors
 ) {
@@ -217,7 +217,7 @@ function _PathListFilter(
             var pathObjs = [];
 
             paths.forEach(function forEachPath(path) {
-                var pathObj = nodePath.parse(path);
+                var pathObj = node_path.parse(path);
                 pathObj.fqpath = path;
                 pathObjs.push(
                     pathObj
