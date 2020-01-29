@@ -34,8 +34,8 @@ function _MonolithInitializer(
                 , dtree
             );
         })
-        //then use the dependency paths to load the assets
-        .then(function thenCollectAssets(paths) {
+        //then use the dependency paths to update the manifest entry paths
+        .then(function thenUpdateManifestFiles(paths) {
             return addEntryPaths(
                 entry
                 , paths
