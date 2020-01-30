@@ -5,6 +5,7 @@
     ]
     , "config": {
         "strict": true
+        , "engine": "node"
         , "output": "TruJS/builder/"
     }
     , "repos": [
@@ -15,8 +16,24 @@
             , "local": "TruJS/core"
         }
     ]
+
+    , "appFileName": "builder-node.js"
+    , "appDtreeFileName": "builder-dtree.js"
+    
+    , "iocType": "monolith"
+    , "appType": "ioc.${iocType}"
+
     , "entries": [
         {
+            "type": "bootstrap"
+            , "bootstrapType": "${appType}"
+            , "config": {
+                "fileName": "${name}.cli.js"
+            }
+            , "appContainerPath": "./${appFileName}"
+            , "appDtreePath": "./${appDtreeFileName}"
+        }
+        , {
             "type": "ioc.monolith"
             , "base": [
                 "{TruJS.build.handlers.file}/build-handler.dtree.json"
@@ -28,16 +45,9 @@
                 , "{TruJS.build.handlers.bootstrap}/build-handler.dtree.json"
             ]
             , "config": {
-                "dtreeFileName": "builder-dtree.js"
-                , "fileName": "builder-node.js"
-                , "engine": "node"
+                "dtreeFileName": "${appDtreeFileName}"
+                , "fileName": "${appFileName}"
             }
-        }
-        , {
-            "type": "file"
-            , "paths": [
-                "./builder-cli.js"
-            ]
         }
     ]
 }
