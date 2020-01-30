@@ -1,5 +1,5 @@
 /**
-* a local reference to the application object
+* A local reference to the application object
 * @property
 */
 var localApp
@@ -8,7 +8,7 @@ var localApp
 * @application ${appName}
 *   @version ${config.version}
 * @template
-*   @variable {string} [iocControllerPath] "../../TruJS/ioc/ioc-controller-node.js"
+*   @variable {string} [iocControllerPath] "../../TruJS/ioc/ioc-controller-${config.engine}.js"
 *   @variable {string} appContainerPath
 *   @variable {string} appDtreePath
 *   @variable {string} [cmdArgsPath] "../../TruJS/cmdArgs.js"
@@ -16,11 +16,6 @@ var localApp
 *   @variable {string} appName
 *   @variable {string} [config.version] "local"
 *   @variable {array} [config.reporterLevels] ["info","error","stack"]
-*   @variable {string} iocGlobals {
-        "require": require
-        , "process": process
-        , "Promise": Promise
-    }
 */
 , appProcess =
     initializeApplication(
@@ -34,7 +29,7 @@ var localApp
     })
     .then(function thenStartController() {
         return localApp.controller.run(
-            localApp.cmdArgs
+            localApp.options
         );
     })
     .then(function thenReportRan() {
@@ -51,4 +46,5 @@ var localApp
         else {
             console.log(err);
         }
+        return Promise.reject(err);
     });
