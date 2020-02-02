@@ -16,8 +16,20 @@ function _FilePathProcessor(
     , workspacePath
     , defaults
 ) {
+    /**
+    *
+    * @property
+    */
     var DOT_PATT = /[.]/g
+    /**
+    *
+    * @property
+    */
     , SEP_PATT = /(?<![\\])[\\\/]/g
+    /**
+    *
+    * @property
+    */
     , MOD_PATT = /^((?:\[[^\]]+\])|r|-)?(.+)$/
     ;
 
@@ -50,14 +62,11 @@ function _FilePathProcessor(
     function createPathFragment(path, projectName) {
         try {
             //turn the build path into a path
-            var procPath = buildHelpers_buildPathProcessor(
-                path
-                , projectName
-            );
             //parse the path
             return promise.resolve(
-                buildHelpers_pathParser(
-                    procPath
+                buildHelpers_buildPathProcessor(
+                    path
+                    , projectName
                 )
             );
         }
