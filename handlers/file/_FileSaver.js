@@ -101,8 +101,18 @@ function _FileSaver(
                     , asset.path.fragment
                 );
             }
-            //add the file name
-            if (!!asset.path.base) {
+            //add the newPath if exists
+            if (asset.path.hasOwnProperty("newPath")) {
+                outputPath = node_path.join(
+                    outputPath
+                    , asset.path.newPath
+                );
+            }
+            //add the file name if needed
+            if (
+                !node_path.extname(outputPath)
+                && !!asset.path.base
+            ) {
                 outputPath = node_path.join(
                     outputPath
                     , asset.path.base

@@ -215,7 +215,7 @@ function _PathParser(
         if (!!pathFrag.base) {
             pathFrag.name = pathFrag.base.split(".");
             if (pathFrag.name.length > 1) {
-                pathFrag.ext = pathFrag.name.pop();
+                pathFrag.ext = `.${pathFrag.name.pop()}`;
             }
             else {
                 pathFrag.ext = "*";
