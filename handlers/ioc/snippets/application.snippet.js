@@ -46,5 +46,7 @@ var localApp
         else {
             console.log(err);
         }
-        return Promise.reject(err);
+        if (${config.export}) {
+            return Promise.reject(err);
+        }
     });
