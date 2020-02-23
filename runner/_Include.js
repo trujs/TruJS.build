@@ -4,6 +4,8 @@
 *   @singleton
 *   @dependency {promise} promise ["+Promise"]
 *   @dependency {function} is_nill [":TruJS.core.is.Nill"]
+*   @dependency {function} is_array [":TruJS.core.is.Array"]
+*   @dependency {function} is_string [":TruJS.core.is.String"]
 *   @dependency {function} utils_copy [":TruJS.core.object.Copy"]
 *   @dependency {object} reporter [":TruJS.core.log._Reporter"]
 *   @dependency {function} processDetails [":TruJS.core.log._ProcessDetails"]
@@ -13,6 +15,7 @@ function _Include(
     promise
     , is_nill
     , is_array
+    , is_string
     , utils_copy
     , reporter
     , processDetails
@@ -30,18 +33,22 @@ function _Include(
         , parentProcDetail
     ) {
         try {
+            var manifestKeys = buildOp.manifest.map(function mapKeys(entry) {
+                return entry.name;
+            });
             //loop through the entries
             buildOp.manifest
-                .forEach(function forEachEntry(entry, indx) {
-                    assets[indx] =
-                        processInclude(
-                            entry
-                            , indx
-                            , assets
-                            , stepName
-                            , parentProcDetail
-                        );
-                });
+            .forEach(function forEachEntry(entry, indx) {
+                assets[indx] =
+                    processIncludes(
+                        entry
+                        , indx
+                        , assets
+                        , manifestKeys
+                        , stepName
+                        , parentProcDetail
+                    );
+            });
 
             return promise.resolve(assets);
         }
@@ -53,14 +60,14 @@ function _Include(
     /**
     * @function
     */
-    function processInclude(entry, entryIndex, assets, stepName, procDetail) {
+    function processIncludes(entry, index, assets, keys, stepName, procDetail) {
         //get the include value for this name
         var propertyKey = (`${stepName}Property`).replace("-","")
-        , propertyName = defaults.includeProperties[propertyKey]
-        , includeAr = entry.include
-            ? entry.include[propertyName]
+        , includeName = defaults.includeProperties[propertyKey]
+        , includeAr = !!entry.include
+            ? entry.include[includeName]
             : null
-        , entryAssets = assets[entryIndex];
+        , entryAssets = assets[index];
 
         if (is_nill(includeAr)) {
             return entryAssets;
@@ -81,30 +88,74 @@ function _Include(
         );
         ///END LOGGING
         //loop through the include array
-        includeAr.forEach(function forEachValue(include) {
-            var includeIndex = include;
-            //if the include is negative then minus it from the entry index
-            if (includeIndex < 0) {
-                includeIndex = entryIndex + includeIndex;
-            }
-            //create a copy of the included index's entry assets to remove references
-            var includeAssets = utils_copy(assets[includeIndex]);
-            if (is_array(includeAssets)) {
-                //mark the included assets
-                includeAssets
-                .forEach(function forEachIncludedAsset(asset,indx) {
-                    asset.included = {
-                        "includeName": propertyName
-                        , "originalIndex": include
-                        , "resolvedIndex": includeIndex
-                        , "assetIndex": indx
-                    };
-                });
-                //combine the entry's and the included assets
-                entryAssets = entryAssets.concat(includeAssets);
-            }
+        includeAr.forEach(function forEachInclude(include) {
+            entryAssets = processInclude(
+                assets
+                , index
+                , keys
+                , includeName
+                , include
+            );
         });
 
         return entryAssets;
+    }
+    /**
+    * @function
+    */
+    function processInclude(assets, entryIndex, keys, includeName, include) {
+        var includeIndex = include
+        , entryAssets = assets[entryIndex]
+        ;
+        //if the included index is a string, translate it
+        if (is_string(include)) {
+            includeIndex =
+                Object.values(keys)
+                .indexOf(include)
+            ;
+        }
+        //if the include is negative then minus it from the entry index
+        if (includeIndex < 0) {
+            includeIndex = entryIndex + includeIndex;
+        }
+
+        if (is_array(assets[includeIndex])) {
+            //create a copy of the included index's entry assets to remove references
+            var includeAssets = utils_copy(
+                assets[includeIndex]
+            );
+
+            return appendIncludedAssets(
+                entryAssets
+                , includeAssets
+                , {
+                    "includeName": includeName
+                    , "originalIndex": include
+                    , "resolvedIndex": includeIndex
+                    , "assetIndex": -1
+                }
+            );
+        }
+
+        return entryAssets;
+    }
+    /**
+    * @function
+    */
+    function appendIncludedAssets(entryAssets, includeAssets, included) {
+        var finalAssets = utils_copy(entryAssets);
+
+        includeAssets
+        .forEach(function forEachIncludedAsset(asset, indx) {
+            //mark the included asset
+            asset.included = utils_copy(included);
+            asset.included.assetIndex = indx;
+            //add it to the
+            finalAssets.push(
+                asset
+            );
+        });
+
+        return finalAssets;
     }
 }
