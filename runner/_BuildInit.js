@@ -9,7 +9,7 @@
 *   @dependency {object} node_path ["+require('path')"]
 *   @dependency {object} node_fs ["+require('fs')"]
 *   @dependency {string} workspacePath ["+process.cwd()"]
-*   @dependency {promise} manifestInit [":TruJS.build.runner._ManifestInit",[]]
+*   @dependency {promise} manifestLoader [":TruJS.build.runner._ManifestLoader",[]]
 *   @dependency {object} utils_merge [":TruJS.object._Merge"]
 *   @dependency {object} utils_reference [":TruJS.object._Reference"]
 *   @dependency {object} utils_ensure [":TruJS.object._Ensure"]
@@ -20,9 +20,9 @@
 function _BuildInit(
     promise
     , node_path
-    , node_fs
     , workspacePath
-    , manifestInit
+    , fs_fileLoader
+    , manifestLoader
     , utils_merge
     , utils_reference
     , utils_ensure
@@ -30,6 +30,12 @@ function _BuildInit(
     , defaults
     , errors
 ) {
+    /**
+    * A regular expression pattern for matching path separaters
+    * @property
+    */
+    var PATH_SEP_PATT = /[\\\/]/g
+    ;
 
     /**
     * @worker
@@ -50,11 +56,6 @@ function _BuildInit(
                 , files[1]
             );
         })
-        //convert the manifest object to an array of {iManifestEntry} instances
-        .then(function thenConvertManifest(config) {
-            manifest = manifestInit(manifest, config);
-            return promise.resolve(config);
-        })
         //return instance of {iBuildOperation}
         .then(function thenReturnBuildOp(config) {
             return {
@@ -71,7 +72,9 @@ function _BuildInit(
     function loadManifest(cmdArgs) {
         try {
             //determine the manifest path from the command line arguments
-            var manPathStr = getPath("manifest", cmdArgs, true);
+            var manPathStr = getPath("manifest", cmdArgs)
+            , basePathStr = getProjectPath(cmdArgs)
+            ;
 
             //make sure we found a path
             if (!manPathStr) {
@@ -80,8 +83,11 @@ function _BuildInit(
                 );
             }
 
-            //run the file loader
-            return readFile(manPathStr);
+            //run the manifest file loader
+            return manifestLoader(
+                manPathStr
+                , basePathStr
+            );
         }
         catch(ex) {
             return promise.reject(ex);
@@ -93,15 +99,26 @@ function _BuildInit(
     */
     function loadConfig(cmdArgs) {
         try {
-            var cfgPathStr = getPath("config", cmdArgs);
+            var cfgPathStr = cmdArgs.arguments.config
+                && getPath("config", cmdArgs)
+            , basePathStr
+            ;
 
             //make sure we found a path
             if (!cfgPathStr) {
                 return promise.resolve();
             }
 
+            //convert a relative path
+            if (cfgPathStr[0] === ".") {
+                basePathStr = getProjectPath(cmdArgs);
+                cfgPathStr = `${basePathStr}/${cfgPathStr.substring(1)}`;
+            }
+
             //run the file loader
-            return readFile(cfgPathStr);
+            return fs_fileLoader(
+                cfgPathStr
+            );
         }
         catch(ex) {
             return promise.reject(ex);
@@ -111,62 +128,49 @@ function _BuildInit(
     * Uses the command line arguments and the desired property name to figure out what the path should be, using the project and command as fallbacks
     * @function
     */
-    function getPath(name, cmdArgs, fallback) {
+    function getPath(name, cmdArgs) {
         var path;
 
         //start with the manifest command line argument
         if (cmdArgs.arguments[name] !== undefined) {
             //we're expecting the manifest argument to be a path
             path = cmdArgs.arguments[name];
-            //if the value is empty then use the default
-            if (!path) {
-                path = defaults[`${name}FileName`];
-            }
         }
-        //if not found we could use the project name; dot notation
-        else if (
-            !!cmdArgs.arguments.project
-            && fallback
-        ) {
+        //if the value is empty then use the default
+        if (!path) {
+            path = defaults[`${name}FileName`];
+        }
+        //if the path is just a fine name then add a ./
+        if (node_path.dirname(path) === ".") {
+            path = `./${path}`;
+        }
+
+        return path;
+    }
+    /**
+    * Get project path
+    * @function
+    */
+    function getProjectPath(cmdArgs) {
+        var path = "";
+        //if there is a project argument, use that
+        if (!!cmdArgs.arguments.project) {
             path = cmdArgs.arguments.project
                 .split(".")
                 .join("/");
         }
-        //the command value could be the project name or manifest path
-        else if (
-            !!cmdArgs.command
-            && fallback
-        ) {
+        //otherwise the command value could be the project name or manifest path
+        else if (!!cmdArgs.command) {
             //no FS path separater, must be the project name
-            if (cmdArgs.command.indexOf("/") === -1
-                && cmdArgs.command.indexOf("\\") === -1) {
+            if (!cmdArgs.command.match(PATH_SEP_PATT)) {
                 path = cmdArgs.command
                     .split(".")
                     .join("/");
             }
+
             else {
                 path = cmdArgs.command;
             }
-        }
-
-        if (!path) {
-            return "";
-        }
-
-        //add the project path if this is just a file name
-        if (node_path.dirname(path) === ".") {
-            path = node_path.join(
-                getPath(null, cmdArgs, true)
-                , path
-            );
-        }
-
-        //add the project path if the path starts with .
-        if (path[0] === "." && path[1] !== ".") {
-            path = node_path.join(
-                getPath(null, cmdArgs, true)
-                , path
-            );
         }
 
         //add the workspace directory for relative paths
@@ -178,46 +182,7 @@ function _BuildInit(
             );
         }
 
-        //add the default file name if missing
-        if (
-            node_path.extname(path) === ""
-            && !!name
-        ) {
-            path = node_path.join(
-                path
-                , defaults[`${name}FileName`]
-            );
-        }
-
         return path;
-    }
-    /**
-    * Attemnpts to read the data from file at `path`
-    * @function
-    */
-    function readFile(path) {
-        //start a promise
-        return new promise(function thenReadFile(resolve, reject) {
-            //start the read process
-            node_fs.readFile(
-                path
-                , 'utf8'
-                , function readFileCb(err, data) {
-                    try {
-                        if (!err) {
-                            resolve(
-                                JSON.parse(data)
-                            );
-                            return;
-                        }
-                    }
-                    catch(ex) {
-                        err = ex;
-                    }
-                    reject(err);
-                }
-            );
-        });
     }
     /**
     * Adds the `cmdArgs.arguments` properties to the `config` object and the `cmdArgs.flags` as a property on the `config` object.

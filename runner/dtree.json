@@ -51,6 +51,7 @@
     , "$run$": [":TruJS.build.runner._BuildRunner",[]]
     , "buildInit": [":TruJS.build.runner._BuildInit",[]]
     , "manifestInit": [":TruJS.build.runner._ManifestInit",[]]
+    , "manifestLoader": [":TruJS.build.runner._ManifestLoader",[]]
     , "builder": [":TruJS.build.runner._Builder",[]]
     , "buildStep": [":TruJS.build.runner._BuildStep",[]]
     , "include": [":TruJS.build.runner._Include",[]]
