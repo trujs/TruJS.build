@@ -19,7 +19,7 @@
 
     , "appFileName": "builder-node.js"
     , "appDtreeFileName": "builder-dtree.js"
-    
+    , "iocNamePrefix": "ioc-controller"
     , "iocType": "monolith"
     , "appType": "ioc.${iocType}"
 
@@ -49,5 +49,8 @@
                 , "fileName": "${appFileName}"
             }
         }
+        , "{TruJS.ioc}/manifests/base.manifest.json"
+        , "{TruJS.ioc}/manifests/node.manifest.json"
+        , "{TruJS.cmdArgs}/base.manifest.json"
     ]
 }

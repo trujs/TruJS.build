@@ -8,10 +8,10 @@ var localApp
 * @application ${appName}
 *   @version ${config.version}
 * @template
-*   @variable {string} [iocControllerPath] "../../TruJS/ioc/ioc-controller-${config.engine}.js"
+*   @variable {string} [iocControllerPath] "./ioc-controller-${config.engine}.js"
 *   @variable {string} appContainerPath
 *   @variable {string} appDtreePath
-*   @variable {string} [cmdArgsPath] "../../TruJS/cmdArgs.js"
+*   @variable {string} [cmdArgsPath] "./cmdArgs.js"
 *   @variable {boolean} [config.export] false
 *   @variable {string} appName
 *   @variable {string} [config.version] "local"
