@@ -54,7 +54,7 @@ function _ModuleFormatter(
             , modData = modFile.data
             , statement
             , engine = entry.config.engine || cnsts.defaultEngine
-            , exp = entry.config.export
+            , exp = entry.moduleExport
             , exportCmd = `${cnsts.export[engine]}${exp};`
             //use the filename from the manifest entry
             , fileName = entry.config.fileName;
