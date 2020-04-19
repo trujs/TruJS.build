@@ -3,14 +3,11 @@
 */
 function createApp(modules) {
     try {
-        var appContainerPath, appDtreePath, iocControllerPath, cmdArgsPath, app;
-        //destructure the resulting array of modules
-        [
-            appContainerPath
-            , appDtreePath
-            , iocControllerPath
-            , cmdArgsPath
-        ] = modules;
+        var appContainerPath = modules[0]
+        , appDtreePath = modules[1]
+        , iocControllerPath = modules[2]
+        , options = modules[3]
+        , app;
         //create the application object
         app = Object.create(
             null
@@ -33,9 +30,9 @@ function createApp(modules) {
                              .setup
                              .getReporter()
                 }
-                , "cmdArgs": {
+                , "options": {
                     "enumerable": true
-                    , "value": cmdArgsPath
+                    , "value": options
                 }
             }
         );

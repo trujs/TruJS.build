@@ -47,6 +47,11 @@ function _DocExtractor(
     * @property
     */
     , ALPHA_NUM_PATT = /^[A-z0-9_.]+$/
+    /**
+    * A regexp pattern for checking a value to see if it's an optional name
+    * @property
+    */
+    , OPTIONAL_NM_PATT = /^\[([A-z0-9_.]+)\]$/
     ;
 
     /**
@@ -187,19 +192,24 @@ function _DocExtractor(
             //set the last tag for the next loop
             lastTag = tagObj;
 
+            //if the tag name is in square brackets then it's optional
+            // do this before converting the description to the name
+            if (
+                !!tagObj.name
+                 && tagObj.name.match(OPTIONAL_NM_PATT)
+             ) {
+                tagObj.name = tagObj.name.substring(1, tagObj.name.length - 1);
+                tagObj.optional = true;
+            }
+            
             //if there isn't a name and the desc is a single series of alpha numeric characters, then that is the name
             if (
-                !tagObj.name && !!tagObj.desc
-                && tagObj.desc.match(ALPHA_NUM_PATT)
+                !tagObj.name
+                 && !!tagObj.desc
+                 && tagObj.desc.match(ALPHA_NUM_PATT)
             ) {
                 tagObj.name = tagObj.desc;
                 delete tagObj.desc;
-            }
-
-            //if the tag name is in square brackets then it's optional
-            if (!!tagObj.name && tagObj.name.indexOf("[") === 0) {
-                tagObj.name = tagObj.name.substring(1, tagObj.name.length - 1);
-                tagObj.optional = true;
             }
 
             return tagObj;

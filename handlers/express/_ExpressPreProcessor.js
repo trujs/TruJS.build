@@ -103,7 +103,7 @@ function _ExpressPreProcessor(
         try {
             var project = entry.config.project
             , namespace = `${project}.${entry.config.routeBranchName}`
-            , fileName = `${namespace.replace(DOT_PATT, "/")}/${defaults.routeKitName}`
+            , fileName = `${namespace.replace(DOT_PATT, "/")}/${entry.config.routeKitName}`
             , file = fs_fileInfo(
                 fileName
                 , cnsts.kitDataPlaceholder

@@ -148,6 +148,7 @@ function _JavaScriptMetaExtractor(
                 meta.isFactory = true;
             }
             meta.arguments = funcMeta.params;
+            meta.argumentDefaults = funcMeta.defaults;
             meta.name = funcMeta.name;
         }
 

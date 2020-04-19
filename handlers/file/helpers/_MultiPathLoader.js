@@ -9,7 +9,6 @@
 */
 function _MultiPathLoader(
     promise
-    , nodePath
     , fs_fileLoader
     , reporter
     , defaults
@@ -123,5 +122,4 @@ function _MultiPathLoader(
             return fileObj.path.fqpath;
         });
     }
-
 }

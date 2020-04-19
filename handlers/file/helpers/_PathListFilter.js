@@ -6,7 +6,7 @@ function _PathListFilter(
     promise
     , is
     , utils_regex
-    , nodePath
+    , buildHelpers_pathParser
     , defaults
     , errors
 ) {
@@ -29,7 +29,12 @@ function _PathListFilter(
     * A regular expression pattern to look for asterisks
     * @property
     */
-    , ASTR_PATT = /[*]/;
+    , ASTR_PATT = /[*]/
+    /**
+    * @alias
+    */
+    , pathParser = buildHelpers_pathParser
+    ;
 
     /**
     * @worker
@@ -47,15 +52,11 @@ function _PathListFilter(
         //then remove any minus matches
         .then(function thenFilterPaths(paths) {
             return filterPaths(paths);
-        })
-        //then parse the path
-        .then(function thenParsePaths(paths) {
-            return parsePaths(paths);
         });
     };
 
     /**
-    * Loops through the array of paths and start a promise for each
+    * Loops through the array of paths and start a promise to process each path
     * @function
     */
     function processPaths(paths) {
@@ -90,10 +91,10 @@ function _PathListFilter(
 
             //if the path fragment is a minus, send the match path regexp
             if (pathInfo.path.minus) {
-                resolve([pathInfo.path.matchPath]);
+                resolve([pathInfo.path]);
                 return;
             }
-            //if the path is a containr without children, return nothin
+            //if the path is a container without children, return nothin
             if (
                 pathInfo.isContainer
                 && pathInfo.children.length === 0
@@ -101,9 +102,9 @@ function _PathListFilter(
                 resolve([]);
                 return;
             }
-            //if this is not a container then return the path
+            //if this is not a container then return the path object
             if (!pathInfo.isContainer) {
-                resolve([pathInfo.path.fqpath]);
+                resolve([pathInfo.path]);
                 return;
             }
 
@@ -112,9 +113,16 @@ function _PathListFilter(
             .forEach(function forEachChildPath(childPath) {
                 //see if the child path matches the path fragment
                 if (testChild(pathInfo, childPath)) {
+                    var pathObj = pathParser(
+                        childPath
+                    );
+                    //if the parent has a newPath property, add it to the path
+                    if (!!pathInfo.newPath) {
+                        pathObj.newPath = athInfo.newPath;
+                    }
                     //add the path to the list
                     pathList.push(
-                        childPath
+                        pathObj
                     );
                 }
             });
@@ -171,20 +179,20 @@ function _PathListFilter(
             var pathList = [];
 
             //loop through the paths
-            paths.forEach(function forEachPath(path) {
-                //and if it's a string then add it
-                if (typeof path === "string") {
-                    //but only if it doesn't exist, making it distinct
-                    if (pathList.indexOf(path) === -1) {
-                        pathList.push(path);
-                    }
-                }
-                //otherwise we're assuming it's regex, which means it's a minus
-                else {
+            paths.forEach(function forEachPath(pathObj) {
+                //if regex, it's a minus, filter the current pathlist
+                if (pathObj.minus) {
                     pathList = removeMinusPath(
                         pathList
-                        , path
+                        , pathObj
                     );
+                }
+                //otherwise this is a path to add to the list
+                else {
+                    //but only if it doesn't already exist
+                    if (!hasPath(pathObj, pathList)) {
+                        pathList.push(pathObj);
+                    }
                 }
             });
 
@@ -198,12 +206,13 @@ function _PathListFilter(
     /**
     * @function
     */
-    function removeMinusPath(pathList, minus) {
+    function removeMinusPath(pathList, removePathObj) {
         var newList = [];
 
-        pathList.forEach(function forEachPath(path) {
-            if (!path.match(minus)) {
-                newList.push(path);
+        pathList.forEach(function forEachPath(pathObj) {
+            var path = pathObj.fqpath;
+            if (!path.match(removePathObj.minus)) {
+                newList.push(pathObj);
             }
         });
 
@@ -212,22 +221,17 @@ function _PathListFilter(
     /**
     * @function
     */
-    function parsePaths(paths) {
-        try {
-            var pathObjs = [];
-
-            paths.forEach(function forEachPath(path) {
-                var pathObj = nodePath.parse(path);
-                pathObj.fqpath = path;
-                pathObjs.push(
-                    pathObj
-                );
-            });
-
-            return  promise.resolve(pathObjs);
-        }
-        catch(ex) {
-            return promise.reject(ex);
-        }
+    function hasPath(pathObj, pathList) {
+        return !pathList.every(function everyPath(existingPath) {
+            //if the fqpath matches we pass level 1
+            if (pathObj.fqpath === existingPath.fqpath) {
+                //if the newPath property is the same, this is a match
+                if (pathObj.newPath === existingPath.newPath) {
+                    return false;
+                }
+            }
+            //continue looping
+            return true;
+        });
     }
 }

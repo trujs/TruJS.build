@@ -145,7 +145,7 @@ function _ExpressKitCreator(
         .forEach(function forEachProp(propKey) {
             var val = expressDocEntry[propKey];
             if(!!val) {
-                val = val.name;
+                val = val.name || val.desc;
                 if (PARSE_PATT.test(val)) {
                     val = JSON.parse(val);
                 }

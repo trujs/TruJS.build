@@ -6,8 +6,8 @@ function _GitRepo(
     promise
     , workspacePath
     , gitDriver
-    , nodePath
-    , nodeFs
+    , node_path
+    , node_fs
     , defaults
     , errors
 ) {
@@ -76,7 +76,7 @@ function _GitRepo(
                 ///END INPUT VALIDATION
 
                 resolve(
-                    nodePath.join(
+                    node_path.join(
                         workspacePath
                         , defaults.sourceDirectory
                         , repoMeta.local
@@ -94,7 +94,7 @@ function _GitRepo(
     */
     function checkForDirectory(path) {
         return new promise(function (resolve, reject) {
-            nodeFs.stat(path, function(err, stat) {
+            node_fs.stat(path, function(err, stat) {
               if (!!err) {
                   resolve(false);
               }

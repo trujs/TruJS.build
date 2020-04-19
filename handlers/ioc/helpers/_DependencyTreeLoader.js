@@ -31,9 +31,9 @@ function _DependencyTreeLoader(
             createLoadList.bind(null, entry)
         )
         //then load the trees
-        .then(function thenLoadTrees(paths) {
+        .then(function thenLoadTrees(pathObjs) {
             return loadTreePaths(
-                paths
+                pathObjs
             );
         });
     };
@@ -78,12 +78,12 @@ function _DependencyTreeLoader(
     * Starts a file load process for each path
     * @function
     */
-    function loadTreePaths(paths) {
+    function loadTreePaths(pathObjs) {
         var procs = [];
 
-        paths.forEach(function forEachPath(path) {
+        pathObjs.forEach(function forEachPath(pathObj) {
             procs.push(
-                fileLoader(path)
+                fileLoader(pathObj.fqpath)
             );
         });
 
@@ -95,7 +95,7 @@ function _DependencyTreeLoader(
         .then(function thenParseJson(dataList) {
             return convertData(
                 dataList
-                , paths
+                , pathObjs
             );
         });
     }
@@ -103,7 +103,7 @@ function _DependencyTreeLoader(
     * Converts the utf8 text to JSON
     * @function
     */
-    function convertData(dataList, paths) {
+    function convertData(dataList, pathObjs) {
         try {
             //keep track of the index so if there is an error we know what the path is
             var curIndx = 0;
@@ -119,7 +119,7 @@ function _DependencyTreeLoader(
         catch(ex) {
             return promise.reject(
                 new Error(
-                    `${errors.invalid_dep_tree} (${paths[curIndx]}) ${ex}`
+                    `${errors.invalid_dep_tree} (${pathObjs[curIndx].fqpath}) ${ex}`
                 )
             );
         }

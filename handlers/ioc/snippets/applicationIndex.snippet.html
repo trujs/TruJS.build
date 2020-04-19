@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>${name}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+    </head>
+    <body>
+        <script type="text/javascript">
+            var myApp;
+            import("${appBootstrapPath}")
+            .then(function (result) {
+                myApp = result.default;
+                console.log(myApp);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+        </script>
+    </body>
+</html>

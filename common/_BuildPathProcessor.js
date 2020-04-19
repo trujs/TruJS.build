@@ -4,6 +4,7 @@
 */
 function _BuildPathProcessor(
     workspacePath
+    , buildHelpers_pathParser
     , defaults
     , errors
 ) {
@@ -11,7 +12,7 @@ function _BuildPathProcessor(
     * A reg exp pattern for parsing the build path
     * @property
     */
-    var BLD_PATH_PATT = /^(\[[A-z0-9, \-+<>]+\])?(?:(?:\{([A-z][A-z0-9_.]*)\})|([.]?[\/]|[A-Z]+[:][\/\\]))?(.*)$/
+    var BLD_PATH_PATT = /^(\[[A-z0-9, \-+<>]+\])?(?:(?:\{([A-z][A-z0-9_.]*)\})|([.]?[\/]|[A-Z]+[:][\/\\]))?(.+?)(?:\[([^\]]+)\])?$/
     /**
     * A reg exp for replacing windows path separaters
     * @property
@@ -33,16 +34,24 @@ function _BuildPathProcessor(
     */
     return function BuildPathProcessor(buildPath, projectName) {
         //create the build path object
-        var pathObj = parseBuildPath(
+        var buildPathObj = parseBuildPath(
             buildPath
             , projectName
         )
         //get the fully qualified path
         , fqpath = createFullyQualifiedPath(
-            pathObj
+            buildPathObj
+        )
+        //use the path parser to parse the fq path
+        , pathObj = buildHelpers_pathParser(
+            fqpath
         );
 
-        return fqpath;
+        if (!!buildPathObj.newPath) {
+            pathObj.newPath = buildPathObj.newPath;
+        }
+
+        return pathObj;
     };
 
     /**
@@ -85,6 +94,8 @@ function _BuildPathProcessor(
 
         //the fourth group is the rest of the path
         pathObj.path = match[4] || "";
+
+        pathObj.newPath = match[5];
 
         return pathObj;
     }

@@ -13,10 +13,11 @@
     , "idGenerator": [":TruJS.core.data._IdGenerator",[]]
     , "processDetails": [":TruJS.core.log._ProcessDetails",[]]
     , "workspacePath": ["+process.cwd()"]
-    , "nodePath": ["+require('path')"]
-    , "nodeFs": ["+require('fs')"]
+    , "node":[{
+        "path": ["+require('path')"]
+        , "fs":  ["+require('fs')"]
+    }]
     , "promise": ["+Promise"]
-
     , "utils": [{
         "copy": [":TruJS.core.object.Copy"]
         , "apply": [":TruJS.core.object.Apply"]
@@ -50,6 +51,7 @@
     , "$run$": [":TruJS.build.runner._BuildRunner",[]]
     , "buildInit": [":TruJS.build.runner._BuildInit",[]]
     , "manifestInit": [":TruJS.build.runner._ManifestInit",[]]
+    , "manifestLoader": [":TruJS.build.runner._ManifestLoader",[]]
     , "builder": [":TruJS.build.runner._Builder",[]]
     , "buildStep": [":TruJS.build.runner._BuildStep",[]]
     , "include": [":TruJS.build.runner._Include",[]]

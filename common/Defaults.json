@@ -24,7 +24,6 @@
             , "global"
             , "module"
             , "exports"
-            , "eval"
             , "window"
             , "document"
             , "body"

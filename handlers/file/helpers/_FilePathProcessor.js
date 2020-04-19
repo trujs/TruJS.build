@@ -9,15 +9,27 @@
 */
 function _FilePathProcessor(
     promise
-    , nodePath
+    , node_path
     , buildHelpers_pathParser
     , buildHelpers_buildPathProcessor
     , buildHelpers_filePathInfo
     , workspacePath
     , defaults
 ) {
+    /**
+    *
+    * @property
+    */
     var DOT_PATT = /[.]/g
+    /**
+    *
+    * @property
+    */
     , SEP_PATT = /(?<![\\])[\\\/]/g
+    /**
+    *
+    * @property
+    */
     , MOD_PATT = /^((?:\[[^\]]+\])|r|-)?(.+)$/
     ;
 
@@ -50,14 +62,11 @@ function _FilePathProcessor(
     function createPathFragment(path, projectName) {
         try {
             //turn the build path into a path
-            var procPath = buildHelpers_buildPathProcessor(
-                path
-                , projectName
-            );
             //parse the path
             return promise.resolve(
-                buildHelpers_pathParser(
-                    procPath
+                buildHelpers_buildPathProcessor(
+                    path
+                    , projectName
                 )
             );
         }
@@ -85,7 +94,7 @@ function _FilePathProcessor(
 
         //if the path starts with a . then we begin at the project's root
         if (path[0] === ".") {
-            path = nodePath.join(
+            path = node_path.join(
                 defaults.sourceDirectory
                 , projectDir
                 , path
@@ -110,25 +119,25 @@ function _FilePathProcessor(
             );
             projectDir = projectDir.replace(
                 DOT_PATT
-                , nodePath.sep
+                , node_path.sep
             );
 
             path = path.substring(sepIndx + 1);
-            path = nodePath.join(
+            path = node_path.join(
                 defaults.sourceDirectory
                 , projectDir
                 , path
             );
         }
 
-        if (!nodePath.isAbsolute(path)) {
-            path = nodePath.join(
+        if (!node_path.isAbsolute(path)) {
+            path = node_path.join(
                 workspacePath
                 , path
             );
         }
 
         //resolve the path and add the modifier back
-        return mod + nodePath.resolve(path);
+        return mod + node_path.resolve(path);
     }
 }

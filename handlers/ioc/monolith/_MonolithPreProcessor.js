@@ -9,9 +9,20 @@ function _MonolithPreProcessor(
     , utils_func_inspector
 ) {
     /**
+    * A collection of constants
+    * @property
+    */
+    var cnsts = {
+        "export": {
+            "node": "module.exports = "
+            , "browser": "export default "
+        }
+        , "defaultEngine": "browser"
+    }
+    /**
     * @alias
     */
-    var modulePreProcessor = buildHandlers_module_preprocess
+    , modulePreProcessor = buildHandlers_module_preprocess
     /**
     * @alias
     */
@@ -85,14 +96,15 @@ function _MonolithPreProcessor(
             var fnMeta = utils_func_inspector(
                 assets[0].data
             )
-            , container = fnMeta.fnText;
+            , container = fnMeta.fnText
+            , engine = entry.config.engine || cnsts.defaultEngine;
 
             assets[0].data = [
                 "// Create the IOC container"
                 , `var container = (${container})()`
                 , ", register = container.register;"
                 , "//export the container"
-                , "module.exports = container;"
+                , `${cnsts.export[engine]}container;`
                 , "//hide the container from the dependencies"
                 , "container = undefined;"
             ]

@@ -161,10 +161,11 @@ function _BuildStep(
     function executeStepHandler(entry, assets, stepName, procDetail) {
         try {
             var typeName = entry[defaults.manifestEntryBuildTypePropertyName]
-            , buildType = utils_lookup(
-                typeName
-                , buildHandlers
-            )
+            , buildType = !!typeName
+                && utils_lookup(
+                    typeName
+                    , buildHandlers
+                )
             , stepHandler, stepProcDetail
             , entryName = entry.name || "unnamed";
 

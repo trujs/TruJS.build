@@ -61,7 +61,15 @@ function _RegistryEntryCreator(
     */
     function getFactoryDependencies(meta) {
         return meta.arguments.map(function mapArgs(arg) {
-            return [`.${arg.replace(LD_PATT, ".")}`];
+            var depEntry = [
+                `.${arg.replace(LD_PATT, ".")}`
+            ];
+            if (meta.argumentDefaults.hasOwnProperty(arg)) {
+                depEntry.push({
+                    "default": JSON.parse(meta.argumentDefaults[arg])
+                });
+            }
+            return depEntry;
         });
     }
 }

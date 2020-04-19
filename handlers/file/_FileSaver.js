@@ -4,13 +4,13 @@
 */
 function _FileSaver(
     promise
-    , nodePath
+    , node_path
     , fs_fileWriter
     , workspacePath
     , is_nill
     , defaults
 ) {
-    
+
     /**
     * @worker
     *   @async
@@ -44,8 +44,8 @@ function _FileSaver(
             , outputPath = entry.config.output;
 
             //ensure the output path is absolute
-            if (!nodePath.isAbsolute(outputPath)) {
-                outputPath = nodePath.join(
+            if (!node_path.isAbsolute(outputPath)) {
+                outputPath = node_path.join(
                     workspacePath
                     , entry.config.buildsDirectory
                     , outputPath
@@ -91,27 +91,37 @@ function _FileSaver(
         var config = entry.config;
         //if the output path is a directory then add the asset's fragment and file name to it
         if (
-            !nodePath.extname(outputPath)
+            !node_path.extname(outputPath)
             && !!asset.path
         ) {
             //add the path fragment if one exists
             if (!!asset.path.fragment) {
-                outputPath = nodePath.join(
+                outputPath = node_path.join(
                     outputPath
                     , asset.path.fragment
                 );
             }
-            //add the file name
-            if (!!asset.path.base) {
-                outputPath = nodePath.join(
+            //add the newPath if exists
+            if (asset.path.hasOwnProperty("newPath")) {
+                outputPath = node_path.join(
+                    outputPath
+                    , asset.path.newPath
+                );
+            }
+            //add the file name if needed
+            if (
+                !node_path.extname(outputPath)
+                && !!asset.path.base
+            ) {
+                outputPath = node_path.join(
                     outputPath
                     , asset.path.base
                 );
             }
         }
         //if there isn't a file name now, use the default
-        if (!nodePath.extname(outputPath)) {
-            outputPath = nodePath.join(
+        if (!node_path.extname(outputPath)) {
+            outputPath = node_path.join(
                 outputPath
                 , config.fileName
             );
