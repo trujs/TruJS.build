@@ -28,7 +28,7 @@
         , "apply": [":TruJS.core.object.Apply"]
         , "applyIf": [":TruJS.core.object.ApplyIf"]
         , "lookup": [":TruJS.core.object.Lookup"]
-        , "regex": [":TruJS.core._RegEx"]
+        , "regex": [":TruJS.core.utils._RegEx"]
         , "merge": [":TruJS.core.object.Merge"]
         , "update": [":TruJS.core.object.Update"]
     }]

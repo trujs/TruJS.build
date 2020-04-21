@@ -32,7 +32,9 @@ var localApp
             localApp.options
         );
     })
-    .then(function thenReportRan() {
+    .then(function thenReportRan(result) {
+        localApp.runResult = result;
+        
         localApp.reporter.info(
             messages.controller_ran
         );

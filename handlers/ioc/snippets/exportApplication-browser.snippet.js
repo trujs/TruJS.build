@@ -1,5 +1,5 @@
 //export the promise if allowed
-if (${config.export}) {
+if (!${config.export}) {
     appProcess = null;
 }
 export default appProcess;
